@@ -1,0 +1,91 @@
+[build-system]
+requires = [
+  "setuptools>=62.1",
+  "setuptools_scm[toml]>=6.2",
+  "wheel",]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ripplemapper"
+description = "Tools for analysing the water air interface to detect waves"
+requires-python = ">=3.9"
+readme = { file = "README.rst", content-type = "text/x-rst" }
+license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
+authors = [
+  { name = "Alasdair Wilson", email = "alasdair.wlsn@googlemail.com" },
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.scripts]
+open_astronomy_package_template_example = "ripplemapper.example_mod:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-doctestplus",
+    "pytest-cov"
+]
+docs = [
+    "sphinx",
+    "sphinx-automodapi",
+]
+
+
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools_scm]
+write_to = "ripplemapper/version.py"
+
+[tool.pytest.ini_options]
+testpaths = [
+  "ripplemapper",
+  "docs",
+]
+doctest_plus = "enabled"
+text_file_format = "rst"
+addopts = "--doctest-rst"
+
+[tool.coverage.run]
+omit = [
+ "ripplemapper/__init*",
+ "ripplemapper/conftest.py",
+ "ripplemapper/*setup_package*",
+ "ripplemapper/tests/*",
+ "ripplemapper/*/tests/*",
+ "ripplemapper/extern/*",
+ "ripplemapper/version*",
+ "*/ripplemapper/__init*",
+ "*/ripplemapper/conftest.py",
+ "*/ripplemapper/*setup_package*",
+ "*/ripplemapper/tests/*",
+ "*/ripplemapper/*/tests/*",
+ "*/ripplemapper/extern/*",
+ "*/ripplemapper/version*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  # Have to re-enable the standard pragma
+  "pragma: no cover",
+  # Don't complain about packages we have installed
+  "except ImportError",
+  # Don't complain if tests don't hit assertions
+  "raise AssertionError",
+  "raise NotImplementedError",
+  # Don't complain about script hooks
+  "def main(.*):",
+  # Ignore branches that don't pertain to this version of Python
+  "pragma: py{ignore_python_version}",
+  # Don't complain about IPython completion helper
+  "def _ipython_key_completions_",
+  # typing.TYPE_CHECKING is False at runtime
+  "if TYPE_CHECKING:",
+  # Ignore typing overloads
+  "@overload",
+]

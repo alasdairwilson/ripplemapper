@@ -1,0 +1,31 @@
+{
+  "template": "https://github.com/OpenAstronomy/packaging-guide",
+  "commit": "cc1e504c8f7d62663ee141788435b37ef519e6dc",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "package_name": "ripplemapper",
+      "module_name": "ripplemapper",
+      "short_description": "Tools for analysing the water air interface to detect waves",
+      "author_name": "Alasdair Wilson",
+      "author_email": "alasdair.wlsn@googlemail.com",
+      "project_url": "",
+      "license": "BSD 2-Clause",
+      "minimum_python_version": "3.9",
+      "use_compiled_extensions": "n",
+      "enable_dynamic_dev_versions": "n",
+      "include_example_code": "y",
+      "include_cruft_update_github_workflow": "y",
+      "_sphinx_theme": "alabaster",
+      "_parent_project": "",
+      "_install_requires": "",
+      "_copy_without_render": [
+        "docs/_templates",
+        "docs/_static",
+        ".github/workflows/sub_package_update.yml"
+      ],
+      "_template": "https://github.com/OpenAstronomy/packaging-guide"
+    }
+  },
+  "directory": null
+}
