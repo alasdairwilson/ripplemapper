@@ -1,5 +1,6 @@
-target-version = "py310"
-line-length = 110
+# ruff configuration file
+target-version = "py39"
+line-length = 120
 exclude = [
   ".git,",
   "__pycache__",
@@ -20,8 +21,7 @@ extend-ignore = [
 ]
 
 
-[per-file-ignores]
+[lint.per-file-ignores]
 
-
-[pydocstyle]
+[lint.pydocstyle]
 convention = "numpy"

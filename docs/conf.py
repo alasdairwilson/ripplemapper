@@ -7,10 +7,11 @@
 
 import datetime
 
-# -- Project information -----------------------------------------------------
-
 # The full version, including alpha/beta/rc tags
 from ripplemapper import __version__
+
+# -- Project information -----------------------------------------------------
+
 release = __version__
 
 project = "ripplemapper"
