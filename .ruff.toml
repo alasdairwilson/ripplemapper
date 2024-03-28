@@ -1,0 +1,27 @@
+target-version = "py310"
+line-length = 110
+exclude = [
+  ".git,",
+  "__pycache__",
+  "build",
+]
+
+[lint]
+select = ["E", "F", "W", "UP", "PT"]
+extend-ignore = [
+  # pycodestyle (E, W)
+  "E501", # LineTooLong
+  # pytest (PT)
+  "PT001", # Always use pytest.fixture()
+  "PT004", # Fixtures which don't return anything should have leading _
+  "PT007", # Parametrize should be lists of tuples
+  "PT011", # Too broad exception assert
+  "PT023", # Always use () on pytest decorators
+]
+
+
+[per-file-ignores]
+
+
+[pydocstyle]
+convention = "numpy"
