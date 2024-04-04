@@ -2,8 +2,6 @@
 import cv2
 import numpy as np
 
-from ripplemapper.ripple_classes import RippleImage
-
 
 #  TODO (ADW): Add support for other image file types just use load_tif for now.
 #  should probably be looping in this function rather than the dispatched functions but... it's fine for now.
@@ -11,10 +9,10 @@ def load_image(file: str) -> np.ndarray:
     """Load an image file based on file extension."""
     # TODO (ADW): this needs to be refactored to allow lists.
     if file.endswith('.tif') or file.endswith('.tiff'):
-        img = load_tif(file)
+        _, img_data = load_tif(file)
     else:
         raise ValueError(f"Unsupported file type: {file}")
-    return img
+    return img_data[0]
 
 
 def load_tif(files: str | list[str]) -> list[np.ndarray]:
@@ -60,7 +58,7 @@ def load_dir(directory: str, pattern: str | bool = False) -> tuple[list[np.ndarr
     files, img_data = load_tif([os.path.join(directory, file) for file in files])
     return files, img_data
 
-def load_dir_to_obj(directory: str, pattern: str | bool = False, **kwargs) -> list[RippleImage]:
+def load_dir_to_obj(directory: str, pattern: str | bool = False, **kwargs) -> list:
     """Load all tif files found in directory and return the data in a list of Ripple Image objects.
 
     Parameters
@@ -75,5 +73,7 @@ def load_dir_to_obj(directory: str, pattern: str | bool = False, **kwargs) -> li
     list[RippleImage]
         list of the data arrays extracted from the tif files.
     """
+    from ripplemapper.ripple_classes import \
+        RippleImage  # prevent circular import
     files, img_data = load_dir(directory, pattern)
     return [RippleImage(file, img_data, **kwargs) for file, img_data in zip(files, img_data)]
