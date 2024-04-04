@@ -1,17 +1,7 @@
 """Ripplemapper images module."""
-from dataclasses import dataclass
-
 import numpy as np
 from skimage import color, feature, filters, morphology
 
-
-@dataclass
-class RippleImage:
-    """Dataclass for ripple images."""
-    image: np.ndarray
-    source_file: str
-    x_scale: float
-    y_scale: float
 
 def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]=False) -> np.ndarray:
     """

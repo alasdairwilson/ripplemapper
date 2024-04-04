@@ -1,26 +1,16 @@
 """Ripplemapper contours module."""
 import heapq
-from dataclasses import dataclass
-from io import load_tif
 
 import cv2
 import numpy as np
-from image import RippleImage, detect_edges, preprocess_image, process_edges
 from matplotlib import pyplot as plt
 from scipy.spatial import cKDTree
 from skimage import measure
 
+from ripplemapper.image import detect_edges, preprocess_image, process_edges
+from ripplemapper.io import load_tif
+from ripplemapper.ripple_classes import RippleContour
 
-@dataclass
-class RippleContour:
-    """Dataclass for ripple contours."""
-    contour: np.ndarray # x,y coordinates of the contour
-    method: str # The method used to generate the contour
-    parent_image: RippleImage # image the contour is derived from
-
-    def to_physical(self):
-        """Converts the contour to physical units."""
-        return
 
 def find_contours(edges_cleaned: np.ndarray, level: float=0.5) -> np.ndarray:
     """
@@ -203,6 +193,37 @@ def find_boundaries(gray_image: np.ndarray) -> np.ndarray:
         upper, lower = contours[1], contours[0]
     return (upper, lower)
 
+def average_boundaries(self, contour_a:RippleContour = None, contour_b:RippleContour = None, iterations: int=3, save_both: bool=True):
+    """Average the two contours to get a more accurate representation of the interface.
+
+    Parameters
+    ----------
+    contour_a : RippleContour, optional
+        The first contour to average, by default self.contours[0]
+    contour_b : RippleContour, optional
+        The second contour to average, by default self.contours[1]
+    iterations : int, optional
+        The number of iterations to average the contours over, by default 3
+
+    Returns
+    -------
+    np.ndarray
+        The averaged contour
+    """
+    # if no contours passed then we use the first two in the list
+    if not contour_a or not contour_b:
+        try:
+            contour_a = self.contours[0]
+            contour_b = self.contours[1]
+        except IndexError:
+            raise ValueError("No contours found in RippleImage.contours and no explicit contours passed.")
+
+    poly_a = contour_a.values
+    poly_b = contour_b.values
+    midpoints_a, midpoints_b = compute_recursive_midpoints(poly_a, poly_b, iterations)
+    self.contours.append(RippleContour(poly_a, "averaged", self))
+    if save_both:
+        self.contours.append(RippleContour(poly_b, "averaged", self))
 
 if __name__ == "__main__":
     # Load and preprocess the image
@@ -216,7 +237,6 @@ if __name__ == "__main__":
 
     # Find contours and approximate them
     contours = find_contours(edges_cleaned, level=0.5)
-    # via a flood fill
     blank_image = np.zeros(edges_cleaned.shape, dtype=np.uint8)
     cont1 = np.flip(contours[0]).astype(np.int32)
     cont2 = np.flip(contours[1]).astype(np.int32)
@@ -230,7 +250,6 @@ if __name__ == "__main__":
     plt.plot(poly2[:, 1], poly2[:, 0], 'b-')
     ax = plt.gca()
     ax.set_ylim(ax.get_ylim()[::-1])
-    plt.show()
 
     img = cv2.drawContours(blank_image, [contour], 0, (255, 255, 255), -1)
     plt.figure()
@@ -244,7 +263,7 @@ if __name__ == "__main__":
     # path = a_star(start, goal, distance_map)
 
     # # To visualize the path on the distance map for verification
-    # import matplotlib.pyplot as plt
+    # import matplotlib.pyplot as pltw
 
     # plt.imshow(distance_map, cmap='gray')
     # plt.plot(start[1], start[0], 'ro')
@@ -270,9 +289,10 @@ if __name__ == "__main__":
     # plt.plot(midpoint_vertices_b[:, 1], midpoint_vertices_b[:, 0], 'y-')
     # plt.plot([p[1] for p in path], [p[0] for p in path], 'c-')  # x and y are swapped for plotting
     # plt.legend(['Upper Contour', 'Lower Contour', 'Midpoints forward', 'Midpoints Reverse', 'A* Path through volume'])
-    # plt.show()
 
-    # fig, ax = plt.figure()
+
+    # fig = plt.figure()
     # plt.plot(cont1[:, 0], cont1[:, 1], 'r-')
+    # ax=plt.gca()
     # ax.set_ylim(ax.get_ylim()[::-1])
-    # plt.show()
+    plt.show()
