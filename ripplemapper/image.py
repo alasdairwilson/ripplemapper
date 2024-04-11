@@ -3,7 +3,7 @@ import numpy as np
 from skimage import color, feature, filters, morphology
 
 
-def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]=False) -> np.ndarray:
+def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]=False, sigma: float=1) -> np.ndarray:
     """
     Preprocess the image by converting it to grayscale and applying Gaussian blur.
 
@@ -14,7 +14,8 @@ def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]
         numpy.ndarray: Preprocessed image.
     """
     gray_image = color.rgb2gray(image)
-    blurred_gray_image = filters.gaussian(gray_image, sigma=2)
+    blurred_gray_image = filters.gaussian(gray_image, sigma=sigma)
+    # crop the image
     if roi_x:
         blurred_gray_image = blurred_gray_image[roi_x[0]:roi_x[1], :]
     if roi_y:

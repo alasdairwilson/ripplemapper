@@ -28,7 +28,7 @@ def load_tif(files: str | list[str]) -> list[np.ndarray]:
 
     return files, img_data
 
-def load_dir(directory: str, pattern: str | bool = False) -> tuple[list[np.ndarray], list[str]]:
+def load_dir(directory: str, pattern: str | bool = False, skip: int = False) -> tuple[list[np.ndarray], list[str]]:
     """Load all tif files found in directory and return the data in a list of numpy.ndarray.
 
     Parameters
@@ -37,6 +37,8 @@ def load_dir(directory: str, pattern: str | bool = False) -> tuple[list[np.ndarr
         directory path to load tif files from
     pattern : str, optional
         optional pattern to match file names, by default False
+    skip : int, optional
+        number of files to skip, by default False
 
     Returns
     -------
@@ -52,28 +54,27 @@ def load_dir(directory: str, pattern: str | bool = False) -> tuple[list[np.ndarr
         raise FileNotFoundError(f"No tif files found in {directory}")
     if pattern:
         files = [file for file in files if pattern in file]
+    if skip:
+        files = files[::skip]
     if not files:
         raise FileNotFoundError(f"No tif files found in {directory} matching pattern {pattern}")
 
     files, img_data = load_tif([os.path.join(directory, file) for file in files])
     return files, img_data
 
-def load_dir_to_obj(directory: str, pattern: str | bool = False, **kwargs) -> list:
+def load_dir_to_obj(directory: str, pattern: str | bool = False, skip: int = False, **kwargs) -> list:
     """Load all tif files found in directory and return the data in a list of Ripple Image objects.
 
     Parameters
     ----------
-    directory : str
-        directory path to load tif files from
-    pattern : str, optional
-        optional pattern to match file names, by default False
+
 
     Returns
     -------
     list[RippleImage]
         list of the data arrays extracted from the tif files.
     """
-    from ripplemapper.ripple_classes import \
-        RippleImage  # prevent circular import
-    files, img_data = load_dir(directory, pattern)
+    # prevent circular import
+    from ripplemapper.ripple_classes import RippleImage
+    files, img_data = load_dir(directory, pattern, skip=skip)
     return [RippleImage(file, img_data, **kwargs) for file, img_data in zip(files, img_data)]

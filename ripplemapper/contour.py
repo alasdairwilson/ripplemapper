@@ -77,7 +77,7 @@ def extend_contour(contour, shape):
         len, width of the image.
     """
     # make a new first point and prepend it to the array, the new first point should have x=0 and y= the same as the second point
-    print(contour[-5:-1])
+
     if contour[0][1] > shape[1]/2:
         new_first_point = [contour[0][1], shape[1]]
         new_last_point =  [contour[-1][1], 0]
@@ -85,7 +85,6 @@ def extend_contour(contour, shape):
         new_first_point = [contour[0][1], 0]
         new_last_point =  [contour[-1][1], shape[0]]
 
-    print(new_last_point, new_first_point)
 
     contour = np.vstack([new_first_point, contour, new_last_point])
 
@@ -193,6 +192,82 @@ def find_boundaries(gray_image: np.ndarray) -> np.ndarray:
         upper, lower = contours[1], contours[0]
     return (upper, lower)
 
+def find_bump_limits(large_changes: np.array, current: int = 0, max_size: int = 10, bumps:list[tuple[int, int]] = []):
+    """
+    Recursive function to find the limits of "small" bumps in the data.
+    Small bumps are defined as those where there are multiple large changes in a row, representing a rapid increase
+    followed by a rapid decrease in the data.
+
+    Parameters
+    ----------
+    large_changes : np.array
+        Array of indices where large changes in the data occur.
+    current : int, optional
+        Current index to start from, by default 0.
+    max_size : int, optional
+        Maximum size of a bump, by default 10.
+    bumps : list[tuple[int, int]], optional
+        List of tuples representing the start and end indices of each bump, by default [].
+
+    Returns
+    -------
+    list[tuple[int, int]]
+        List of tuples representing the start and end indices of each bump.
+    """
+    start = large_changes[(large_changes > current)][0]
+    end = False
+    for i in np.arange(1, max_size):
+        if start+i > large_changes[-1]:
+            return bumps
+        if start + i in large_changes:
+            end = start + i
+    if end:
+        bumps.append((start, end))
+    current = end or start + max_size
+    print(start, current)
+    if current > large_changes[-1]:
+        return bumps
+    return find_bump_limits(large_changes, current=current, bumps=bumps, max_size=max_size)
+
+def smooth_bumps(contour: RippleContour, max_size: int = 10, std_factor: float = 3.0):
+    """
+    Function to smooth out bumps in the contour data.
+
+    If there is an area of the contour where the gradient rapidly changes and then rapidly changes again,
+    this can be a jump between contours rather than the continual following of one contour.
+
+    Parameters
+    ----------
+    contour : RippleContour
+        Contour object containing the data to be smoothed.
+    max_size : int, optional
+        Maximum size of a bump, by default 10.
+    std_factor : float, optional
+        Standard deviation factor for identifying large changes, by default 3.0.
+
+    Returns
+    -------
+    None
+        The function modifies the contour values in-place.
+    """
+    # moving average
+    print(max_size)
+    moving_avg = np.convolve(contour.values[0, :], np.ones(100)/100, mode='valid')
+    diffs = contour.values[0, :len(moving_avg)] - moving_avg
+    gradients = np.gradient(diffs)
+    # find large changes, grater than the std_factor*std of the gradients versus the moving average
+    large_changes = np.where(np.abs(gradients) > std_factor*np.std(gradients))[0]
+    # find any small bumps, i.e. those where there are multiple large changes in a row
+    bumps = find_bump_limits(large_changes, max_size=max_size)
+    # unroll each bump into all indices contained within lims
+    indices = []
+    for bump in bumps:
+        indices += list(np.arange(bump[0],bump[1]))
+    indices = np.array(indices)
+    contour.values = np.delete(contour.values, indices[indices < contour.values.shape[1]], axis=1)
+    return contour
+
+
 def average_boundaries(self, contour_a:RippleContour = None, contour_b:RippleContour = None, iterations: int=3, save_both: bool=True):
     """Average the two contours to get a more accurate representation of the interface.
 
@@ -221,9 +296,10 @@ def average_boundaries(self, contour_a:RippleContour = None, contour_b:RippleCon
     poly_a = contour_a.values
     poly_b = contour_b.values
     midpoints_a, midpoints_b = compute_recursive_midpoints(poly_a, poly_b, iterations)
-    self.contours.append(RippleContour(poly_a, "averaged", self))
+    self.contours.append(RippleContour(midpoints_a, "averaged", self))
     if save_both:
-        self.contours.append(RippleContour(poly_b, "averaged", self))
+        self.contours.append(RippleContour(midpoints_b, "averaged", self))
+
 
 if __name__ == "__main__":
     # Load and preprocess the image
