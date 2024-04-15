@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/OpenAstronomy/packaging-guide",
-  "commit": "cc1e504c8f7d62663ee141788435b37ef519e6dc",
+  "commit": "8841110a4f658dcc0dae994a2dcc2cbed359131d",
   "checkout": null,
   "context": {
     "cookiecutter": {
