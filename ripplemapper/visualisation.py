@@ -1,4 +1,7 @@
+import warnings
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def plot_contours(ripple_contours, *args, **kwargs):
@@ -8,8 +11,9 @@ def plot_contours(ripple_contours, *args, **kwargs):
     for contour in ripple_contours:
         label = contour.parent_image.source_file.split('/')[-1] + ' : ' + contour.method
         plt.plot(contour.values[1], contour.values[0],  label=label, *args, **kwargs)
-    plt.gca().invert_yaxis()
-    plt.legend()
+    # set y axis to be high to low
+    ax = plt.gca()
+    ax.set_ylim((np.max(ax.get_ylim()), np.min(ax.get_ylim())))
 
 def plot_image(ripple_image, include_contours: bool=True, *args, **kwargs):
     """Plot a RippleImage object.
@@ -24,8 +28,7 @@ def plot_image(ripple_image, include_contours: bool=True, *args, **kwargs):
     plt.imshow(ripple_image.image, cmap='gray')
     if include_contours:
         if len(ripple_image.contours) == 0:
-            raise UserWarning(f"No contours found for image: {ripple_image.source_file} but you have specified include_contours=True"
-                                "Set include_contours=False to suppress this warning.")
+            warnings.warn(f"No contours found for image: {ripple_image.source_file} but you selected include_contours=True.")
         for contour in ripple_image.contours:
             plt.plot(contour.values[:][1], contour.values[:][0], *args, **kwargs, label=contour.method)
     plt.legend()

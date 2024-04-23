@@ -2,7 +2,9 @@ from pathlib import Path
 
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib.animation import FuncAnimation
 
+from ripplemapper.contour import smooth_bumps
 from ripplemapper.image import preprocess_image
 from ripplemapper.io import load_image
 from ripplemapper.visualisation import plot_contours, plot_image
@@ -32,6 +34,11 @@ class RippleContour:
         plt.title(f"{self.parent_image.source_file} - Contour: {self.method}")
         return
 
+    def smooth(self, **kwargs):
+        """Smooth the contour."""
+        smooth_bumps(self, **kwargs)
+        return
+
 
 class RippleImage:
     """Class for ripple images."""
@@ -59,8 +66,34 @@ class RippleImage:
         """Add a contour to the RippleImage object."""
         self.contours.append(RippleContour(values, method, self))
 
+    def smooth_contours(self, **kwargs):
+        """Smooth all the contours in the image."""
+        self.contours = [contour.smooth(**kwargs) for contour in self.contours]
+        return
+
     def plot(self, include_contours: bool=True, *args, **kwargs):
         """Plot the image with optional."""
         plot_image(self, include_contours=include_contours, *args, **kwargs)
         plt.title(self.source_file.split('/')[-1])
         return
+
+class RippleImageSeries:
+    """Class for a series of ripple images."""
+
+    def __init__(self, image_list: list[RippleImage]):
+        self.images = image_list
+
+    def __repr__(self) -> str:
+        return f"RippleImageSeries: {len(self.images)} images"
+
+    def animate(self, fname: str=False, **kwargs):
+        """Animate the images."""
+        if not fname:
+            fname = f"{self.images[0].source_file.split('/')[-1]}_animation.gif"
+        fig = plt.figure()
+        ani = FuncAnimation(fig, self.update, fargs=kwargs, frames=range(len(self.images)), interval=200, repeat=False)
+        ani.save(fname, writer='ffmpeg')
+
+    def update(self, frame, **kwargs):
+        plt.clf()
+        self.images[frame].plot(**kwargs)

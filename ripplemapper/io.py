@@ -28,7 +28,7 @@ def load_tif(files: str | list[str]) -> list[np.ndarray]:
 
     return files, img_data
 
-def load_dir(directory: str, pattern: str | bool = False, skip: int = False) -> tuple[list[np.ndarray], list[str]]:
+def load_dir(directory: str, pattern: str | bool = False, skip: int = 1, start: int=0, end: int=None) -> tuple[list[np.ndarray], list[str]]:
     """Load all tif files found in directory and return the data in a list of numpy.ndarray.
 
     Parameters
@@ -54,15 +54,14 @@ def load_dir(directory: str, pattern: str | bool = False, skip: int = False) -> 
         raise FileNotFoundError(f"No tif files found in {directory}")
     if pattern:
         files = [file for file in files if pattern in file]
-    if skip:
-        files = files[::skip]
+    files = files[start:end:skip]
     if not files:
         raise FileNotFoundError(f"No tif files found in {directory} matching pattern {pattern}")
 
     files, img_data = load_tif([os.path.join(directory, file) for file in files])
     return files, img_data
 
-def load_dir_to_obj(directory: str, pattern: str | bool = False, skip: int = False, **kwargs) -> list:
+def load_dir_to_obj(directory: str, pattern: str | bool = False, skip: int = False, start: int=0, end: int=-1, **kwargs) -> list:
     """Load all tif files found in directory and return the data in a list of Ripple Image objects.
 
     Parameters
@@ -75,6 +74,6 @@ def load_dir_to_obj(directory: str, pattern: str | bool = False, skip: int = Fal
         list of the data arrays extracted from the tif files.
     """
     # prevent circular import
-    from ripplemapper.ripple_classes import RippleImage
-    files, img_data = load_dir(directory, pattern, skip=skip)
+    from ripplemapper.classes import RippleImage
+    files, img_data = load_dir(directory, pattern, skip=skip, start=start, end=end)
     return [RippleImage(file, img_data, **kwargs) for file, img_data in zip(files, img_data)]

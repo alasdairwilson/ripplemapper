@@ -1,11 +1,13 @@
 """Mostly a collection of functions to help instantiate a list of image classes and add some contours"""
+import warnings
+
 import cv2
 import numpy as np
 
+from ripplemapper.classes import RippleContour, RippleImage
 from ripplemapper.contour import (a_star, combine_contours, distance_map,
                                   find_contours, smooth_bumps)
-from ripplemapper.image import detect_edges, process_edges
-from ripplemapper.ripple_classes import RippleContour, RippleImage
+from ripplemapper.image import cv_segmentation, detect_edges, process_edges
 
 
 def add_boundary_contours(ripple_images: list[RippleImage] or RippleImage) -> list[RippleImage]:
@@ -28,8 +30,7 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage, contour_
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
         if len(ripple_image.contours) < 2:
-            raise UserWarning(f"RippleImage object must have at least two contours, skipping image: {ripple_image.source_file}")
-            continue
+            warnings.warn(f"RippleImage object must have at least two contours, skipping image: {ripple_image.source_file}")
         cont1 = np.flip(ripple_image.contours[contour_index[0]].values).astype(np.int32).T
         cont2 = np.flip(ripple_image.contours[contour_index[1]].values).astype(np.int32).T
         contour = combine_contours(cont1, cont2)
@@ -43,6 +44,15 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage, contour_
         path = np.flip(np.array(path), axis=0).T # the path output has insane shape, need to flip it
         ripple_image.add_contour(path, 'A* traversal')
 
+def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage, **kwargs):
+    """Add Chan-Vese contours to a list of RippleImage objects."""
+    if isinstance(ripple_images, RippleImage):
+        ripple_images = [ripple_images]
+    for ripple_image in ripple_images:
+        cv = cv_segmentation(ripple_image.image, **kwargs)
+        contours = find_contours(cv)
+        ripple_image.add_contour(np.array([contours[0][:,0],contours[0][:,1]]), 'Chan-Vese')
+
 def remove_small_bumps(contour: RippleContour, **kwargs) -> RippleContour:
     """Remove small bumps from a RippleContour object."""
     return smooth_bumps(contour, **kwargs)
@@ -52,5 +62,7 @@ def remove_small_bumps_from_images(ripple_images: list[RippleImage] | RippleImag
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
-        ripple_image.contours = [remove_small_bumps(contour, **kwargs) for contour in ripple_image.contours if contour is not None]
-    return
+        for contour in ripple_image.contours:
+            if contour is not None:
+                remove_small_bumps(contour, **kwargs)
+    return ripple_images

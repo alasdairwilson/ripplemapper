@@ -1,6 +1,7 @@
 """Ripplemapper images module."""
 import numpy as np
 from skimage import color, feature, filters, morphology
+from skimage.segmentation import chan_vese
 
 
 def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]=False, sigma: float=1) -> np.ndarray:
@@ -21,6 +22,34 @@ def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]
     if roi_y:
         blurred_gray_image = blurred_gray_image[:, roi_y[0]:roi_y[1]]
     return blurred_gray_image
+
+def cv_segmentation(image: np.ndarray, use_gradient=True, **kwargs) -> np.ndarray:
+    """
+    Perform image segmentation using skimage chan-vese method.
+
+    Parameters:
+        image (numpy.ndarray): Input image.
+
+    Returns:
+        numpy.ndarray: Segmented image.
+    """
+    # Define default values for kwargs in the wrapper
+    default_kwargs = {
+        'mu': 0.5,
+        'dt': 0.5,
+        'lambda1': 1,
+        'lambda2': 3,
+    }
+
+    # Update kwargs with default values if they are not already set
+    for key, value in default_kwargs.items():
+        kwargs.setdefault(key, value)
+
+    cv = chan_vese(
+        image,
+        **kwargs
+    )
+    return cv
 
 def detect_edges(image: np.ndarray) -> np.ndarray:
     """

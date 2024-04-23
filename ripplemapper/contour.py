@@ -9,7 +9,6 @@ from skimage import measure
 
 from ripplemapper.image import detect_edges, preprocess_image, process_edges
 from ripplemapper.io import load_tif
-from ripplemapper.ripple_classes import RippleContour
 
 
 def find_contours(edges_cleaned: np.ndarray, level: float=0.5) -> np.ndarray:
@@ -214,6 +213,8 @@ def find_bump_limits(large_changes: np.array, current: int = 0, max_size: int = 
     list[tuple[int, int]]
         List of tuples representing the start and end indices of each bump.
     """
+    if not (large_changes > current).any():
+        return bumps
     start = large_changes[(large_changes > current)][0]
     end = False
     for i in np.arange(1, max_size):
@@ -224,12 +225,11 @@ def find_bump_limits(large_changes: np.array, current: int = 0, max_size: int = 
     if end:
         bumps.append((start, end))
     current = end or start + max_size
-    print(start, current)
     if current > large_changes[-1]:
         return bumps
     return find_bump_limits(large_changes, current=current, bumps=bumps, max_size=max_size)
 
-def smooth_bumps(contour: RippleContour, max_size: int = 10, std_factor: float = 3.0):
+def smooth_bumps(contour, max_size: int = 40, std_factor: float = 2.0):
     """
     Function to smooth out bumps in the contour data.
 
@@ -251,24 +251,29 @@ def smooth_bumps(contour: RippleContour, max_size: int = 10, std_factor: float =
         The function modifies the contour values in-place.
     """
     # moving average
-    print(max_size)
     moving_avg = np.convolve(contour.values[0, :], np.ones(100)/100, mode='valid')
     diffs = contour.values[0, :len(moving_avg)] - moving_avg
     gradients = np.gradient(diffs)
     # find large changes, grater than the std_factor*std of the gradients versus the moving average
     large_changes = np.where(np.abs(gradients) > std_factor*np.std(gradients))[0]
     # find any small bumps, i.e. those where there are multiple large changes in a row
-    bumps = find_bump_limits(large_changes, max_size=max_size)
+    if len(large_changes) == 0:
+        return contour
+    bumps=[]
+    bumps = find_bump_limits(large_changes, max_size=max_size, bumps=[])
     # unroll each bump into all indices contained within lims
     indices = []
+    print(indices)
     for bump in bumps:
         indices += list(np.arange(bump[0],bump[1]))
     indices = np.array(indices)
+    print(indices[-1])
+    print("num removed", indices.shape)
     contour.values = np.delete(contour.values, indices[indices < contour.values.shape[1]], axis=1)
     return contour
 
 
-def average_boundaries(self, contour_a:RippleContour = None, contour_b:RippleContour = None, iterations: int=3, save_both: bool=True):
+def average_boundaries(self, contour_a = None, contour_b = None, iterations: int=3, save_both: bool=True):
     """Average the two contours to get a more accurate representation of the interface.
 
     Parameters
@@ -285,6 +290,8 @@ def average_boundaries(self, contour_a:RippleContour = None, contour_b:RippleCon
     np.ndarray
         The averaged contour
     """
+    from ripplemapper.classes import RippleContour
+
     # if no contours passed then we use the first two in the list
     if not contour_a or not contour_b:
         try:

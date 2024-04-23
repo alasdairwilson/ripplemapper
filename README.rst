@@ -1,5 +1,5 @@
-Tools for analysing the water air interface to detect waves
------------------------------------------------------------
+A python tool for identifying the surface boundary in a breaking wave image.
+-----------------------------------------------------------------------------
 
 License
 -------
