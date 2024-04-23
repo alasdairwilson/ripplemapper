@@ -31,13 +31,12 @@ docs = [
     "sphinx-automodapi",
 ]
 
-
-
 [tool.setuptools]
 zip-safe = false
 include-package-data = true
 
 [tool.setuptools.packages.find]
+
 
 [tool.setuptools_scm]
 write_to = "ripplemapper/version.py"
