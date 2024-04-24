@@ -40,6 +40,8 @@ include-package-data = true
 
 [tool.setuptools_scm]
 write_to = "ripplemapper/version.py"
+# Use "no-local-version" so dev releases are compatible with PyPI
+local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
 testpaths = [
