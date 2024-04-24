@@ -4,11 +4,8 @@ on:
   push:
     tags:
       - 'v*'
-      - '!*dev*'
-      - '!*pre*'
-      - '!*post*'
   pull_request:
-  # Allow manual runs through the web UI
+  # Allow manual runs through the web UI to publish to testpypi
   workflow_dispatch:
 
 jobs:
@@ -54,11 +51,12 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: python-package-distributions
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
         path: dist/
     - name: Publish PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
 
   github-release:
     name: >-
@@ -104,6 +102,7 @@ jobs:
 
   publish-to-testpypi:
     name: Publish test PyPi
+    if: github.event_name == 'workflow_dispatch'
     needs:
     - build
     runs-on: ubuntu-latest
