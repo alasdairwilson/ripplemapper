@@ -3,9 +3,10 @@
 # This file does only contain a selection of the most common options. For a
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
-
-
 import datetime
+import os
+
+from sphinx_gallery.sorting import ExampleTitleSortKey, ExplicitOrder
 
 # The full version, including alpha/beta/rc tags
 from ripplemapper import __version__
@@ -24,18 +25,26 @@ author = "Alasdair Wilson"
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.intersphinx",
-    "sphinx.ext.todo",
-    "sphinx.ext.coverage",
-    "sphinx.ext.inheritance_diagram",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.doctest",
-    "sphinx.ext.mathjax",
-    "sphinx_automodapi.automodapi",
-    "sphinx_automodapi.smart_resolver",
+    'hoverxref.extension',
+    'matplotlib.sphinxext.plot_directive',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo',
+    'sphinx.ext.viewcode',
+    'sphinx_automodapi.automodapi',
+    'sphinx_automodapi.smart_resolver',
+    'sphinx_changelog',
+    'sphinx_copybutton',
+    'sphinx_design',
+    'sphinx_gallery.gen_gallery',
+    'sphinxext.opengraph',
 ]
+
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ["_templates"]
@@ -58,7 +67,20 @@ default_role = 'py:obj'
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {"python": ("https://docs.python.org/", None)}
+intersphinx_mapping = {
+        "python": (
+        "https://docs.python.org/3/",
+        (None, "http://www.astropy.org/astropy-data/intersphinx/python3.inv"),
+    ),
+    "numpy": (
+        "https://numpy.org/doc/stable/",
+        (None, "http://www.astropy.org/astropy-data/intersphinx/numpy.inv"),
+    ),
+    "scipy": (
+        "https://docs.scipy.org/doc/scipy/reference/",
+        (None, "http://www.astropy.org/astropy-data/intersphinx/scipy.inv"),
+    ),
+}
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -81,3 +103,16 @@ html_theme = "alabaster"
 autoclass_content = "both"
 
 # -- Other options ----------------------------------------------------------
+
+# -- Sphinx Gallery ------------------------------------------------------------
+sphinx_gallery_conf = {
+    'backreferences_dir': os.path.join('generated', 'modules'),
+    'filename_pattern': '^((?!skip_).)*$',
+    'examples_dirs': os.path.join('..', 'examples'),
+    'subsection_order': ExplicitOrder([
+        '../examples/',
+    ]),
+    'within_subsection_order': ExampleTitleSortKey,
+    'gallery_dirs': os.path.join('generated', 'gallery'),
+    'matplotlib_animations': True,
+}
