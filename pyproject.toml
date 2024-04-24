@@ -29,6 +29,8 @@ test = [
 docs = [
     "sphinx",
     "sphinx-automodapi",
+    "sphinx-rtd-theme",
+    "sphinx-gallery",
 ]
 
 [tool.setuptools]
