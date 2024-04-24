@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ripplemapper"
-description = "Tools for analysing the water air interface to detect waves"
+description = "Tools for analysing the water air interface to programmatically detect waves"
 requires-python = ">=3.9"
 readme = { file = "README.rst", content-type = "text/x-rst" }
 license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
