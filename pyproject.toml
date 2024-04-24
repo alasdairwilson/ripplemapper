@@ -14,7 +14,13 @@ license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
 authors = [
   { name = "Alasdair Wilson", email = "alasdair.wlsn@googlemail.com" },
 ]
-dependencies = []
+dependencies = [
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "skimage",
+  "opencv-python",
+]
 dynamic = ["version"]
 
 [project.scripts]
@@ -31,6 +37,7 @@ docs = [
     "sphinx-automodapi",
     "sphinx-rtd-theme",
     "sphinx-gallery",
+    "sphinx-hoverxref",
 ]
 
 [tool.setuptools]
