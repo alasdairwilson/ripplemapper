@@ -27,6 +27,7 @@ author = "Alasdair Wilson"
 extensions = [
     'hoverxref.extension',
     'matplotlib.sphinxext.plot_directive',
+    'sphinx.ext.graphviz',
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
@@ -44,7 +45,19 @@ extensions = [
     'sphinx_gallery.gen_gallery',
     'sphinxext.opengraph',
 ]
+numpydoc_show_class_members = False # for automodapi
+# Set automodapi to generate files inside the generated directory
+automodapi_toctreedirnm = "generated/api"
+graphviz_output_format = "svg"
 
+graphviz_dot_args = [
+    '-Nfontsize=10',
+    '-Nfontname=Helvetica Neue, Helvetica, Arial, sans-serif',
+    '-Efontsize=10',
+    '-Efontname=Helvetica Neue, Helvetica, Arial, sans-serif',
+    '-Gfontsize=10',
+    '-Gfontname=Helvetica Neue, Helvetica, Arial, sans-serif'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ["_templates"]
@@ -103,6 +116,7 @@ html_theme = "alabaster"
 autoclass_content = "both"
 
 # -- Other options ----------------------------------------------------------
+suppress_warnings = ["config.cache"]
 
 # -- Sphinx Gallery ------------------------------------------------------------
 sphinx_gallery_conf = {

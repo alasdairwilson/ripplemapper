@@ -7,19 +7,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ripplemapper"
-description = "Tools for analysing the water air interface to programmatically detect waves"
+description = "Tools for analysing the water air interface to programmatically detect surface waves."
 requires-python = ">=3.9"
 readme = { file = "README.rst", content-type = "text/x-rst" }
-license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
+license = { file = "licenses/LICENSE.rst", content-type = "text/plain" } # noqa
 authors = [
   { name = "Alasdair Wilson", email = "alasdair.wlsn@googlemail.com" },
 ]
 dependencies = [
-  "numpy",
-  "scipy",
-  "matplotlib",
-  "scikit-image",
-  "opencv-python",
+  "numpy >1.24.0",
+  "scipy >1.9.0",
+  "matplotlib >3.6",
+  "scikit-image > 0.21",
+  "opencv-python > 4.7.0",
 ]
 dynamic = ["version"]
 

@@ -10,6 +10,7 @@ from skimage import measure
 from ripplemapper.image import detect_edges, preprocess_image, process_edges
 from ripplemapper.io import load_tif
 
+__all__ = ["find_contours", "compute_recursive_midpoints", "extend_contour", "combine_contours", "smooth_contour", "distance_map", "neighbors", "a_star", "get_next_node", "find_boundaries", "find_bump_limits", "smooth_bumps", "average_boundaries"]
 
 def find_contours(edges_cleaned: np.ndarray, level: float=0.5) -> np.ndarray:
     """
@@ -120,6 +121,14 @@ def smooth_contour(contour: np.ndarray, window: int=3):
     return np.vstack([x, y]).T
 
 def distance_map(binary_map):
+    """
+    Compute the distance map of a binary image.
+
+    Parameters
+    ----------
+    binary_map : np.ndarray
+        Binary image with interiors marked as 1's and exteriors as 0's.
+    """
 
     # Assuming `binary_map` is your binary image with interiors marked as 1's and exteriors as 0's
     # First, ensure the binary_map is of type uint8

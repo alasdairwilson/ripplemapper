@@ -3,6 +3,7 @@ import numpy as np
 from skimage import color, feature, filters, morphology
 from skimage.segmentation import chan_vese
 
+__all__ = ["preprocess_image", "cv_segmentation", "detect_edges", "process_edges"]
 
 def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]=False, sigma: float=1) -> np.ndarray:
     """

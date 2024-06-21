@@ -9,6 +9,8 @@ from ripplemapper.contour import (a_star, combine_contours, distance_map,
                                   find_contours, smooth_bumps)
 from ripplemapper.image import cv_segmentation, detect_edges, process_edges
 
+__all__ = ["add_boundary_contours", "add_a_star_contours", "add_chan_vese_contours", "remove_small_bumps", "remove_small_bumps_from_images"]
+
 
 def add_boundary_contours(ripple_images: list[RippleImage] or RippleImage) -> list[RippleImage]:
     """Add boundary contours to a list of RippleImage objects."""
