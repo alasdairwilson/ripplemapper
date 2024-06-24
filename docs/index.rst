@@ -21,7 +21,6 @@ It provides an interface for reading in and processing images of water-air inter
 
     .. grid-item-card:: Reference
         :link: reference
-        :link-type: ref
         :text-align: center
 
         :material-outlined:`code;8em;sd-text-secondary`

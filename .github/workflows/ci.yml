@@ -23,7 +23,7 @@ jobs:
   core:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
-      submodules: false
+      coverage: codecov
       toxdeps: tox-pypi-filter
       posargs: --color=yes
       envs: |
@@ -33,7 +33,6 @@ jobs:
     needs: [core]
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
-      submodules: false
       coverage: codecov
       toxdeps: tox-pypi-filter
       posargs: --color=yes
