@@ -44,7 +44,6 @@ jobs:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   docs:
-    needs: test
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
       default_python: '3.12'
