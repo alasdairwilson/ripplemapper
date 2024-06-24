@@ -26,7 +26,7 @@ jobs:
       submodules: false
       coverage: codecov
       toxdeps: tox-pypi-filter
-      posargs: -n auto --color=yes
+      posargs: --color=yes
       envs: |
         - linux: py312
     secrets:
@@ -39,7 +39,7 @@ jobs:
       submodules: false
       coverage: codecov
       toxdeps: tox-pypi-filter
-      posargs: -n auto --color=yes
+      posargs: --color=yes
       envs: |
         - windows: py311
         - macos: py310
