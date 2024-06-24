@@ -1,7 +1,7 @@
 [build-system]
 requires = [
   "setuptools>=62.1",
-  "setuptools_scm[toml]>=6.2",
+  "setuptools_scm[toml]>=8.0",
   "wheel",]
 build-backend = "setuptools.build_meta"
 
@@ -27,10 +27,13 @@ dynamic = ["version"]
 open_astronomy_package_template_example = "ripplemapper.example_mod:main"
 
 [project.optional-dependencies]
-test = [
-    "pytest",
-    "pytest-doctestplus",
-    "pytest-cov"
+tests = [
+  "pytest-astropy>=0.11.0",
+  "pytest-mpl>=0.16",
+  "pytest-xdist>=3.0.2",
+  "pytest>=7.1.0",
+  "pytest-doctestplus>=1.1.0",
+  "pytest-cov",
 ]
 docs = [
   "sphinx>=5.0.0",
@@ -62,7 +65,7 @@ testpaths = [
 ]
 doctest_plus = "enabled"
 text_file_format = "rst"
-addopts = "--doctest-rst"
+addopts = "--doctest-glob=*.rst"
 
 [tool.coverage.run]
 omit = [
