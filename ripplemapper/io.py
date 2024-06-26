@@ -1,16 +1,18 @@
 """This module is for input/output functions."""
 import cv2
 import numpy as np
-
+from pathlib import PosixPath, Path
 import os
 
 __all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj"]
 
 #  TODO (ADW): Add support for other image file types just use load_tif for now.
 #  should probably be looping in this function rather than the dispatched functions but... it's fine for now.
-def load_image(file: str) -> np.ndarray:
+def load_image(file: str | PosixPath) -> np.ndarray:
     """Load an image file based on file extension."""
     # TODO (ADW): this needs to be refactored to allow lists.
+    if isinstance(file, PosixPath):
+        file = str(file.resolve())
     if file.endswith('.tif') or file.endswith('.tiff'):
         _, img_data = load_tif(file)
     else:

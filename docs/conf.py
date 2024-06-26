@@ -124,7 +124,7 @@ sphinx_gallery_conf = {
     'filename_pattern': '^((?!skip_).)*$',
     'examples_dirs': os.path.join('..', 'examples'),
     'subsection_order': ExplicitOrder([
-        '../examples/',
+        '../examples/io/',
     ]),
     'within_subsection_order': ExampleTitleSortKey,
     'gallery_dirs': os.path.join('generated', 'gallery'),

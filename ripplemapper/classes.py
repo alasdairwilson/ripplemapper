@@ -48,8 +48,11 @@ class RippleImage:
         self.contours: list[RippleContour] = []
         if len(args) == 1:
             if isinstance(args[0], str) or isinstance(args[0], Path):
-                self.image = load_image(args[0])
-                self.source_file = args[0]
+                file = args[0]
+                if isinstance(args[0], Path):
+                    file = str(file.resolve())
+                self.image = load_image(file)
+                self.source_file = file
             else:
                 raise ValueError("Invalid input, expected a path to an image file or fname, image data pair.")
         elif len(args) == 2:
