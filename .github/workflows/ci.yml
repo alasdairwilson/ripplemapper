@@ -28,6 +28,9 @@ jobs:
       posargs: --color=yes
       envs: |
         - linux: py312
+        - linux: py311
+        - linux: py310
+        - linux: py39
 
   test:
     needs: [core]
@@ -46,7 +49,7 @@ jobs:
   docs:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
-      default_python: '3.11'
+      default_python: '3.10'
       submodules: false
       pytest: false
       toxdeps: tox-pypi-filter

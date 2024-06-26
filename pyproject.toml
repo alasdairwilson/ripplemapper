@@ -44,7 +44,6 @@ docs = [
   "sphinx-gallery>=0.13.0",
   "sphinxext-opengraph>=0.6.0",
   "sphinx-hoverxref>=1.3.0",
-  "sphinx-graphviz>=0.17.0",
 ]
 
 [tool.setuptools]
