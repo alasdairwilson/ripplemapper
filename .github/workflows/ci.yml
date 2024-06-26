@@ -30,7 +30,6 @@ jobs:
         - linux: py312
         - linux: py311
         - linux: py310
-        - linux: py39
 
   test:
     needs: [core]
