@@ -1,4 +1,4 @@
-Example Gallery for `ripplemapper.io`
-======================================
+Using `ripplemapper.io`
+=======================
 
 Examples showing how to load data into ripplemapper.

@@ -1,2 +1,2 @@
-example gallery for ripplemapper
-================================
+Example Gallery
+================

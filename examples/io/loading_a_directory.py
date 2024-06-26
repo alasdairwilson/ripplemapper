@@ -1,7 +1,7 @@
 """
-=========================================================
-Loading an directory of images into a RippleImage objets
-=========================================================
+========================================================
+Loading a directory of images into RippleImage objects
+========================================================
 
 Ripplemapper is capable of loading a directory of images into a list of RippleImage objects.
 """

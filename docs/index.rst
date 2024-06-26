@@ -11,7 +11,7 @@ It provides an interface for reading in and processing images of water-air inter
     :gutter: 1
 
     .. grid-item-card:: Example gallery
-        :link: generated/gallery
+        :link: generated/gallery/index
         :text-align: center
 
         :material-outlined:`palette;8em;sd-text-secondary`

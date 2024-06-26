@@ -99,7 +99,7 @@ intersphinx_mapping = {
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "alabaster"
+html_theme = "pydata_sphinx_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -124,9 +124,12 @@ sphinx_gallery_conf = {
     'filename_pattern': '^((?!skip_).)*$',
     'examples_dirs': os.path.join('..', 'examples'),
     'subsection_order': ExplicitOrder([
-        '../examples/io/',
+        '../examples/io',
     ]),
     'within_subsection_order': ExampleTitleSortKey,
     'gallery_dirs': os.path.join('generated', 'gallery'),
     'matplotlib_animations': True,
+    'plot_gallery': True,
+    'remove_config_comments': True,
+    'only_warn_on_example_error': True,
 }
