@@ -1,9 +1,15 @@
-.. automodapi:: ripplemapper.classes
+.. _reference:
 
-.. automodapi:: ripplemapper.io
+*********
+Reference
+*********
 
-.. automodapi:: ripplemapper.contour
+.. toctree::
+    :maxdepth: 1
 
-.. automodapi:: ripplemapper.image
+    classes
+    io
+    image
+    contour
+    analyse
 
-.. automodapi:: ripplemapper.analyse

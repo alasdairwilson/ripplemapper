@@ -1,6 +1,6 @@
 """
 ===========================================
-THis is a placeholder file for the examples
+Loading an image into a RippleImage object
 ===========================================
 
 This example shows how to...

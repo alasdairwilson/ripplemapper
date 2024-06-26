@@ -28,7 +28,7 @@ It provides an interface for reading in and processing images of water-air inter
         Technical description of the inputs, outputs, and behavior of each part of ``ripplemapper``.
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     :hidden:
 
     generated/gallery/index
