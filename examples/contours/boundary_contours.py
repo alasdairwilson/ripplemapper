@@ -3,16 +3,17 @@
 Adding "Boundary" Contours to an Image
 ===========================================
 
-One of the foundational 
+One of the foundational
 """
 
 ################################################################################
-# We can load an image into a RippleImage object using the RippleImage classs and then run `add_boundary_contours` to add boundary contours to the image.
+# We can load an image into a RippleImage object using the RippleImage class and then run `add_boundary_contours` to add boundary contours to the image.
 
+import matplotlib.pyplot as plt
+
+from ripplemapper.analyse import add_boundary_contours
 from ripplemapper.classes import RippleImage
 from ripplemapper.data.example import example_data
-from ripplemapper.analyse import add_boundary_contours
-import matplotlib.pyplot as plt
 
 ripple_img = RippleImage(example_data[-1])
 add_boundary_contours(ripple_img, sigma=2)
