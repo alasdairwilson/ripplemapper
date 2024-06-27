@@ -268,15 +268,12 @@ def smooth_bumps(contour, max_size: int = 40, std_factor: float = 2.0):
     # find any small bumps, i.e. those where there are multiple large changes in a row
     if len(large_changes) == 0:
         return contour
-    bumps=[]
     bumps = find_bump_limits(large_changes, max_size=max_size, bumps=[])
     # unroll each bump into all indices contained within lims
     indices = []
-    print(indices)
     for bump in bumps:
         indices += list(np.arange(bump[0],bump[1]))
     indices = np.array(indices)
-    print(indices[-1])
     print("num removed", indices.shape)
     contour.values = np.delete(contour.values, indices[indices < contour.values.shape[1]], axis=1)
     return contour
