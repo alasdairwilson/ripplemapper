@@ -1,8 +1,9 @@
 """This module is for input/output functions."""
+import os
+from pathlib import PosixPath
+
 import cv2
 import numpy as np
-from pathlib import PosixPath, Path
-import os
 
 __all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj"]
 

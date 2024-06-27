@@ -148,3 +148,4 @@ cython_debug/
 sg_execution_times.rst
 requirements-min.txt
 ting.pytestArgs": [
+.vscode*

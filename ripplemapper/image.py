@@ -52,7 +52,7 @@ def cv_segmentation(image: np.ndarray, use_gradient=True, **kwargs) -> np.ndarra
     )
     return cv
 
-def detect_edges(image: np.ndarray) -> np.ndarray:
+def detect_edges(image: np.ndarray, sigma=1, low_threshold: np.float32=0.1, high_threshold: np.float32=0.5) -> np.ndarray:
     """
     Detect edges in the image using Canny edge detection.
 
@@ -62,7 +62,7 @@ def detect_edges(image: np.ndarray) -> np.ndarray:
     Returns:
         numpy.ndarray: Binary edge image.
     """
-    edges_gray = feature.canny(image, sigma=1)
+    edges_gray = feature.canny(image, sigma=sigma, low_threshold=low_threshold, high_threshold=high_threshold)
     return edges_gray
 
 def process_edges(edges_gray: np.ndarray, sigma: float=0) -> np.ndarray:

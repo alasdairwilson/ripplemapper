@@ -12,7 +12,7 @@ from ripplemapper.image import cv_segmentation, detect_edges, process_edges
 __all__ = ["add_boundary_contours", "add_a_star_contours", "add_chan_vese_contours", "remove_small_bumps", "remove_small_bumps_from_images"]
 
 
-def add_boundary_contours(ripple_images: list[RippleImage] or RippleImage, overwrite: bool = False) -> list[RippleImage]:
+def add_boundary_contours(ripple_images: list[RippleImage] or RippleImage, overwrite: bool = False, level=None, **kwargs) -> list[RippleImage]:
     """Add boundary contours to a list of RippleImage objects."""
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
@@ -28,7 +28,7 @@ def add_boundary_contours(ripple_images: list[RippleImage] or RippleImage, overw
                         continue
         edges = detect_edges(ripple_image.image)
         processed_edges = process_edges(edges)
-        contours = find_contours(processed_edges)
+        contours = find_contours(processed_edges, level=level)
         ripple_image.add_contour(np.array([contours[0][:,0],contours[0][:,1]]), 'Upper Boundary')
         ripple_image.add_contour(np.array([contours[1][:,0],contours[1][:,1]]), 'Lower Boundary')
 
