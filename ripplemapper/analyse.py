@@ -12,14 +12,14 @@ from ripplemapper.image import cv_segmentation, detect_edges, process_edges
 __all__ = ["add_boundary_contours", "add_a_star_contours", "add_chan_vese_contours", "remove_small_bumps", "remove_small_bumps_from_images"]
 
 
-def add_boundary_contours(ripple_images: list[RippleImage] or RippleImage, overwrite: bool = False, level=None, **kwargs) -> list[RippleImage]:
+def add_boundary_contours(ripple_images: list[RippleImage] | RippleImage, overwrite: bool = False, level=None, **kwargs) -> list[RippleImage]:
     """Add boundary contours to a list of RippleImage objects."""
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
         if len(ripple_image.contours) > 0:
             for contour in ripple_image.contours:
-                if 'Upper Boundary' in contour.name or 'Lower Boundary' in contour.name:
+                if 'Upper Boundary' in contour.method or 'Lower Boundary' in contour.method:
                     if overwrite:
                         warnings.warn(f"Overwriting boundary contour for image: {ripple_image.source_file}")
                         ripple_image.contours.remove(contour)
@@ -44,7 +44,7 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage, contour_
             warnings.warn(f"RippleImage object must have at least two contours, skipping image: {ripple_image.source_file}")
             continue
         for contour in ripple_image.contours:
-            if 'A* traversal' in contour.name:
+            if 'A* traversal' in contour.method:
                 if overwrite:
                     warnings.warn(f"Overwriting A* contour for image: {ripple_image.source_file}")
                     ripple_image.contours.remove(contour)
@@ -71,7 +71,7 @@ def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage, overw
     for ripple_image in ripple_images:
         if len(ripple_image.contours) > 0:
             for contour in ripple_image.contours:
-                if 'Chan-Vese' in contour.name:
+                if 'Chan-Vese' in contour.method:
                     if overwrite:
                         warnings.warn(f"Overwriting Chan-Vese contour for image: {ripple_image.source_file}")
                         ripple_image.contours.remove(contour)

@@ -24,7 +24,7 @@ def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]
         blurred_gray_image = blurred_gray_image[:, roi_y[0]:roi_y[1]]
     return blurred_gray_image
 
-def cv_segmentation(image: np.ndarray, use_gradient=True, **kwargs) -> np.ndarray:
+def cv_segmentation(image: np.ndarray, **kwargs) -> np.ndarray:
     """
     Perform image segmentation using skimage chan-vese method.
 
@@ -36,7 +36,7 @@ def cv_segmentation(image: np.ndarray, use_gradient=True, **kwargs) -> np.ndarra
     """
     # Define default values for kwargs in the wrapper
     default_kwargs = {
-        'mu': 0.5,
+        'mu': 0.1,
         'dt': 0.5,
         'lambda1': 1,
         'lambda2': 3,
