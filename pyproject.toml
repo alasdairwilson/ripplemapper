@@ -37,6 +37,7 @@ tests = [
 ]
 docs = [
   "sphinx>=5.0.0",
+  "sphinx-change-log>=0.1",
   "sphinx-automodapi>=0.14.1",
   "sphinx-copybutton>=0.5.0",
   "sphinx-design>=0.2.0",
