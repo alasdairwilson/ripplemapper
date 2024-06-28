@@ -149,3 +149,4 @@ sg_execution_times.rst
 requirements-min.txt
 ting.pytestArgs": [
 .vscode*
+.vscode/settings.json

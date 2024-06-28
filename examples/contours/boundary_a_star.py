@@ -14,7 +14,7 @@ Since it is common for waves to have a shape that is multivalued then a normal a
 
 import matplotlib.pyplot as plt
 
-from ripplemapper.analyse import add_boundary_contours, add_a_star_contours
+from ripplemapper.analyse import add_a_star_contours, add_boundary_contours
 from ripplemapper.classes import RippleImage
 from ripplemapper.data.example import example_data
 

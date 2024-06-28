@@ -5,7 +5,7 @@ Adding Chan-Vese Contours to an Image
 
 This example shows how to add a contour based on the chan-vese segmentation of the image.
 
-The Chan-vese algorithm is a level set method for image segmentation. 
+The Chan-vese algorithm is a level set method for image segmentation.
 It is based on the Mumford-Shah functional and is designed to segment images without edges.
 
 In this example, we will the `ripplemapper.analyse` module to segment the image and add the resulting contour to the image.
