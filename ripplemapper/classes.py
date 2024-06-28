@@ -182,8 +182,8 @@ class RippleImageSeries:
 
         for image in self.images:
             if fname:
-                print(fname)
-                print(image_fname)
+                image_fname = fname.split('/')[0:-1] + [image.source_file.split("/")[-1].replace('.tif', '.rimg')]
+                image_fname = "/".join(image_fname)
             else:
                 image_fname = None
             image.save(fname=image_fname, save_image_data=save_image_data)
