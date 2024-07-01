@@ -12,6 +12,7 @@ from ripplemapper.image import preprocess_image
 from ripplemapper.io import load_image
 from ripplemapper.visualisation import plot_contours, plot_image
 
+__all__ = ['RippleContour', 'RippleImage', 'RippleImageSeries']
 
 class RippleContour:
     """Dataclass for ripple contours."""
