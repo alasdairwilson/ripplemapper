@@ -193,5 +193,5 @@ class RippleImageSeries:
         """Load the image series from a file."""
         with gzip.open(file, 'rb') as f:
             image_files = pickle.load(f)
-
-        self.images = [RippleImage(image_file) for image_file in image_files]
+        base_path = Path(file).parent
+        self.images = [RippleImage(str(base_path / image_file.split("/")[-1])) for image_file in image_files] # TODO Path ojets should be accepted by RippleImage, etc.
