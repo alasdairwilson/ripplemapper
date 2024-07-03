@@ -5,7 +5,24 @@ from pathlib import PosixPath
 import cv2
 import numpy as np
 
-__all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj"]
+__all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj", "load"]
+
+def load(file: str | PosixPath):
+    """Load a file into a ripplemapper object based on file extension."""
+    from ripplemapper.classes import (RippleContour, RippleImage,
+                                      RippleImageSeries)
+
+    if isinstance(file, PosixPath):
+        file = str(file.resolve())
+    if file.endswith(".txt"):
+        return RippleContour(file)
+    elif file.endswith(".rimg"):
+        return RippleImage(file)
+    elif file.endswith(".rimgs"):
+        return RippleImageSeries(file)
+    else:
+        raise ValueError(f"Unsupported file type: {file}")
+
 
 #  TODO (ADW): Add support for other image file types just use load_tif for now.
 #  should probably be looping in this function rather than the dispatched functions but... it's fine for now.

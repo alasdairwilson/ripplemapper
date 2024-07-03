@@ -10,6 +10,16 @@ It provides an interface for reading in and processing images of water-air inter
 .. grid:: 1 1 2 2
     :gutter: 1
 
+    .. grid-item-card:: Tutorial
+        :link: tutorial
+        :link-type: ref
+        :text-align: center
+
+        :material-outlined:`accessibility_new;8em;sd-text-secondary`
+
+        **New users start here!**
+        Walkthrough on how to install ripplemapper and get to grips with the basics.
+
     .. grid-item-card:: Example gallery
         :link: generated/gallery/index.html
         :text-align: center
@@ -32,5 +42,6 @@ It provides an interface for reading in and processing images of water-air inter
     :maxdepth: 2
     :hidden:
 
+    tutorial/index
     generated/gallery/index
     reference/index
