@@ -6,6 +6,10 @@ The `ripplemapper` Tutorial
 
 This tutorial will guide you through the basic usage of `ripplemapper`.
 
+.. contents:: Tutorial
+    :depth: 2
+    :backlinks: none
+
 Installation
 ************
 
