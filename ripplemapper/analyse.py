@@ -4,7 +4,7 @@ import warnings
 import cv2
 import numpy as np
 
-from ripplemapper.classes import RippleContour, RippleImage
+from ripplemapper.classes import RippleContour, RippleImage, RippleImageSeries
 from ripplemapper.contour import (a_star, combine_contours, distance_map,
                                   find_contours, smooth_bumps)
 from ripplemapper.image import cv_segmentation, detect_edges, process_edges
@@ -12,8 +12,10 @@ from ripplemapper.image import cv_segmentation, detect_edges, process_edges
 __all__ = ["add_boundary_contours", "add_a_star_contours", "add_chan_vese_contours", "remove_small_bumps", "remove_small_bumps_from_images"]
 
 
-def add_boundary_contours(ripple_images: list[RippleImage] | RippleImage, overwrite: bool = False, level=None, **kwargs) -> list[RippleImage]:
+def add_boundary_contours(ripple_images: list[RippleImage] | RippleImage | RippleImageSeries, overwrite: bool = False, level=None, **kwargs) -> list[RippleImage]:
     """Add boundary contours to a list of RippleImage objects."""
+    if isinstance(ripple_images, RippleImageSeries):
+        ripple_images = ripple_images.images
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
@@ -33,10 +35,12 @@ def add_boundary_contours(ripple_images: list[RippleImage] | RippleImage, overwr
         ripple_image.add_contour(np.array([contours[1][:,0],contours[1][:,1]]), 'Lower Boundary')
 
 
-def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage, contour_index: list[int]=[0,1], overwrite:bool=False) -> list[RippleImage]:
+def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage | RippleImageSeries, contour_index: list[int]=[0,1], overwrite:bool=False) -> list[RippleImage]:
     """Add A* contours to a list of RippleImage objects."""
     if len(contour_index) != 2:
         raise ValueError("contour_index must be a list of two integers.")
+    if isinstance(ripple_images, RippleImageSeries):
+        ripple_images = ripple_images.images
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
@@ -64,8 +68,10 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage, contour_
         path = np.flip(np.array(path), axis=0).T # the path output has insane shape, need to flip it
         ripple_image.add_contour(path, 'A* traversal')
 
-def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage, overwrite: bool = False, **kwargs):
+def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage | RippleImageSeries, overwrite: bool = False, **kwargs):
     """Add Chan-Vese contours to a list of RippleImage objects."""
+    if isinstance(ripple_images, RippleImageSeries):
+        ripple_images = ripple_images.images
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:

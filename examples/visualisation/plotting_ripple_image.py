@@ -1,6 +1,6 @@
 """
 ========================
-Plotting a ripple image
+Plotting a RippleImage
 ========================
 
 How to plot a ripple image using inbuilt plotting methods.

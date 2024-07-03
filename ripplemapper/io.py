@@ -34,7 +34,7 @@ def load_tif(files: str | list[str]) -> list[np.ndarray]:
 
     return files, img_data
 
-def load_dir(directory: str, pattern: str | bool = False, skip: int = 1, start: int=0, end: int | bool=None) -> tuple[list[np.ndarray], list[str]]:
+def load_dir(directory: str | PosixPath, pattern: str | bool = False, skip: int = 1, start: int=0, end: int | bool=None) -> tuple[list[np.ndarray], list[str]]:
     """Load all tif files found in directory and return the data in a list of numpy.ndarray.
 
     Parameters
@@ -51,7 +51,9 @@ def load_dir(directory: str, pattern: str | bool = False, skip: int = 1, start: 
     tuple[list[np.ndarray], list[str]]
         list of the data arrays extracted from the tif files.
     """
-    files = os.listdir(directory)
+    if isinstance(directory, PosixPath):
+        directory = str(directory.resolve())
+    files = sorted(os.listdir(directory))
     files = [file for file in files if file.endswith('.tif') or file.endswith('.tiff')]
     if not files:
         raise FileNotFoundError(f"No tif files found in {directory}")
@@ -67,7 +69,7 @@ def load_dir(directory: str, pattern: str | bool = False, skip: int = 1, start: 
     files, img_data = load_tif([os.path.join(directory, file) for file in files])
     return files, img_data
 
-def load_dir_to_obj(directory: str, pattern: str | bool = False, skip: int = 1, start: int=0, end: int=None, **kwargs) -> list:
+def load_dir_to_obj(directory: str | PosixPath, pattern: str | bool = False, skip: int = 1, start: int=0, end: int=None, **kwargs) -> list:
     """Load all tif files found in directory and return the data in a list of Ripple Image objects.
 
     Parameters

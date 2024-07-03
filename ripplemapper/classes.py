@@ -1,6 +1,7 @@
 import gzip
 import json
 import pickle
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -159,13 +160,13 @@ class RippleImageSeries:
     def __repr__(self) -> str:
         return f"RippleImageSeries: {len(self.images)} images"
 
-    def animate(self, fname: str = False, **kwargs):
+    def animate(self, fig=plt.figure(figsize=(12,8)), fname: str = None, **kwargs):
         """Animate the images."""
-        if not fname:
-            fname = f"{self.images[0].source_file.split('/')[-1]}_animation.gif"
-        fig = plt.figure()
-        ani = FuncAnimation(fig, self.update, fargs=kwargs, frames=range(len(self.images)), interval=200, repeat=False)
-        ani.save(fname, writer='ffmpeg')
+        ani = FuncAnimation(fig, partial(self.update, **kwargs),
+                                         frames=range(len(self.images)), interval=200, repeat=False)
+        if fname:
+            ani.save(fname, writer='ffmpeg')
+        return ani
 
     def update(self, frame, **kwargs):
         plt.clf()

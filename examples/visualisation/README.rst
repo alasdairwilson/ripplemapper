@@ -1,4 +1,4 @@
 Visualising data
 ==================
 
-Examples showing visualisation of data in `ripplemapper`.
+Examples showing visualisation of various data in `ripplemapper`.

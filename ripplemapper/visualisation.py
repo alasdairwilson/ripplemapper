@@ -48,4 +48,4 @@ def plot_image(ripple_image, include_contours: bool=True, cmap: str='gray',  **k
             warnings.warn(f"No contours found for image: {ripple_image.source_file} but you selected include_contours=True.")
         for contour in ripple_image.contours:
             plt.plot(contour.values[:][1], contour.values[:][0], label=contour.method)
-    plt.legend()
+        plt.legend()
