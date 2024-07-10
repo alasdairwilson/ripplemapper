@@ -65,7 +65,7 @@ local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
 norecursedirs = ['examples']
-testpaths = ['tests', 'docs']
+testpaths = ['ripplemapper/tests', 'docs']
 text_file_format = "rst"
 addopts = [
     "--doctest-glob=*.rst"

@@ -99,6 +99,8 @@ def remove_small_bumps(contour: RippleContour, **kwargs) -> RippleContour:
 
 def remove_small_bumps_from_images(ripple_images: list[RippleImage] | RippleImage, **kwargs) -> list[RippleImage]:
     """Remove small bumps from a list of RippleImage objects."""
+    if isinstance(ripple_images, RippleImageSeries):
+        ripple_images = ripple_images.images
     if isinstance(ripple_images, RippleImage):
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:

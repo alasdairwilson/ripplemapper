@@ -33,7 +33,10 @@ def preprocess_image(image: np.ndarray, roi_x: list[int]=False, roi_y: list[int]
     Returns:
         numpy.ndarray: Preprocessed image.
     """
-    gray_image = color.rgb2gray(image)
+    if len(image.shape) == 3 and image.shape[2] == 3:
+        gray_image = color.rgb2gray(image)
+    else:
+        gray_image = image
     blurred_gray_image = filters.gaussian(gray_image, sigma=sigma)
     # crop the image
     if roi_x:
