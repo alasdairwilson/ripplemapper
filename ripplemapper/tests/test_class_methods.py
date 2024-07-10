@@ -42,6 +42,7 @@ def test_ripple_image_series_animate(loaded_example_image_series):
     assert ani is not None
 
 @pytest.mark.filterwarnings("ignore:Image not loaded for image")
+@pytest.mark.filterwarnings("ignore:No contours found for image")
 def test_ripple_image_series_update(loaded_example_image_series):
     plt.figure()
     loaded_example_image_series.update(0)
