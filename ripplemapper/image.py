@@ -102,25 +102,3 @@ def process_edges(edges_gray: np.ndarray, sigma: float=0) -> np.ndarray:
     if sigma > 0:
         edges_cleaned = filters.gaussian(edges_cleaned, sigma=sigma)
     return edges_closed
-
-
-if __name__ == "__main__":
-    from matplotlib import pyplot as plt
-
-    from ripplemapper.analyse import (add_a_star_contours,
-                                      add_boundary_contours,
-                                      add_chan_vese_contours)
-    from ripplemapper.io import load_dir_to_obj
-
-    x = load_dir_to_obj('/mnt/h/Downloads/D16H10/high_speed/', roi_x=[400,900], skip=25, start=200, end=250)
-    # calculate divergence of image
-    # img = cv2.GaussianBlur(np.sum(np.abs(np.gradient(x[1].image)), axis=0)/np.max(x[1].image), (11,11), 0)*cv2.GaussianBlur(1-(x[1].image/np.max(x[1].image)), (11,11), 1)
-    # img = img/np.max(img)
-    # x[1].image = img
-    add_boundary_contours(x[1], sigma=2)
-    add_a_star_contours(x[1])
-    add_chan_vese_contours(x[1], use_gradients=True)
-    x[1].plot()
-
-
-    plt.show()

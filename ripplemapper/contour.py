@@ -3,12 +3,10 @@ import heapq
 
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 from scipy.spatial import cKDTree
 from skimage import measure
 
-from ripplemapper.image import detect_edges, preprocess_image, process_edges
-from ripplemapper.io import load_tif
+from ripplemapper.image import detect_edges, process_edges
 
 __all__ = ["find_contours", "compute_recursive_midpoints", "extend_contour", "combine_contours", "smooth_contour", "distance_map", "neighbors", "a_star", "get_next_node", "find_boundaries", "find_bump_limits", "smooth_bumps", "average_boundaries"]
 
@@ -312,76 +310,3 @@ def average_boundaries(self, contour_a = None, contour_b = None, iterations: int
     self.contours.append(RippleContour(midpoints_a, "averaged", self))
     if save_both:
         self.contours.append(RippleContour(midpoints_b, "averaged", self))
-
-
-if __name__ == "__main__":
-    # Load and preprocess the image
-    image_path = "/mnt/h/1_00369.tif"
-    files, img_data = load_tif(image_path)
-    gray_image = preprocess_image(img_data, roi_y=[400, 900])
-
-    # Detect edges and process them
-    edges_gray = detect_edges(gray_image.squeeze())
-    edges_cleaned = process_edges(edges_gray)
-
-    # Find contours and approximate them
-    contours = find_contours(edges_cleaned, level=0.5)
-    blank_image = np.zeros(edges_cleaned.shape, dtype=np.uint8)
-    cont1 = np.flip(contours[0]).astype(np.int32)
-    cont2 = np.flip(contours[1]).astype(np.int32)
-    contour = combine_contours(cont1, cont2)
-
-    poly1_vertices = measure.approximate_polygon(contours[0], tolerance=1)
-    poly2_vertices = measure.approximate_polygon(contours[1], tolerance=1)
-    poly1 = smooth_contour(poly1_vertices)
-    poly2 = smooth_contour(poly2_vertices)
-    plt.plot(poly1[:, 1], poly1[:, 0], 'r-')
-    plt.plot(poly2[:, 1], poly2[:, 0], 'b-')
-    ax = plt.gca()
-    ax.set_ylim(ax.get_ylim()[::-1])
-
-    img = cv2.drawContours(blank_image, [contour], 0, (255, 255, 255), -1)
-    plt.figure()
-    plt.imshow(img)
-
-
-    # distance_map = distance_map(img)
-
-    # start = (np.argmax(distance_map[:,0]), 0)  # Highest value on the left boundary
-    # goal = (np.argmax(distance_map[:, -1]), distance_map.shape[1] - 1)  # Highest value on the right boundary, for simplicity
-    # path = a_star(start, goal, distance_map)
-
-    # # To visualize the path on the distance map for verification
-    # import matplotlib.pyplot as pltw
-
-    # plt.imshow(distance_map, cmap='gray')
-    # plt.plot(start[1], start[0], 'ro')
-    # plt.plot(goal[1], goal[0], 'go')
-    # plt.figure()
-    # print(path[0:5])
-    # plt.plot([p[1] for p in path], [p[0] for p in path], 'r-')  # x and y are swapped for plotting
-    # plt.figure()
-    # plt.plot([distance_map[p[0], p[1]] for p in path], 'r-')
-
-    # midpoint_vertices_a, midpoint_vertices_b = compute_recursive_midpoints(poly1_vertices, poly2_vertices, iterations=3)
-
-    # # Print or further process the midpoint vertices as needed
-    # plt.figure()
-    # plt.imshow(edges_cleaned)
-
-    # # plot the original image and all our paths:
-    # plt.figure(figsize=(24,16))
-    # plt.imshow(gray_image.squeeze(), cmap='gray')
-    # plt.plot(cont1[:, 0], cont1[:, 1], 'r-')
-    # plt.plot(cont2[:, 0], cont2[:, 1], 'b-')
-    # plt.plot(midpoint_vertices_a[:, 1], midpoint_vertices_a[:, 0], 'g-')
-    # plt.plot(midpoint_vertices_b[:, 1], midpoint_vertices_b[:, 0], 'y-')
-    # plt.plot([p[1] for p in path], [p[0] for p in path], 'c-')  # x and y are swapped for plotting
-    # plt.legend(['Upper Contour', 'Lower Contour', 'Midpoints forward', 'Midpoints Reverse', 'A* Path through volume'])
-
-
-    # fig = plt.figure()
-    # plt.plot(cont1[:, 0], cont1[:, 1], 'r-')
-    # ax=plt.gca()
-    # ax.set_ylim(ax.get_ylim()[::-1])
-    plt.show()
