@@ -19,7 +19,7 @@ class RippleContour:
     """Dataclass for ripple contours."""
 
     def __init__(self, *args, image=None):  # we do not type image to prevent crossover typing
-        if len(args) == 1 and isinstance(args[0], str) and args[0].endswith('.txt'):
+        if len(args) == 1 and isinstance(args[0], str) and str(args[0]).endswith('.txt'):
             self._load(args[0], image)
         elif len(args) == 2 and isinstance(args[0], np.ndarray) and isinstance(args[1], str):
             self.values = args[0]
@@ -71,7 +71,7 @@ class RippleImage:
     def __init__(self, *args, roi_x: list[int] = False, roi_y: list[int] = False):
         self.contours: list[RippleContour] = []
         # Handle loading from file if the file extension is .rimg
-        if len(args) == 1 and isinstance(args[0], str) and args[0].endswith('.rimg'):
+        if len(args) == 1 and isinstance(args[0], str) and str(args[0]).endswith('.rimg'):
             self._load(args[0])
             return
 
@@ -153,7 +153,7 @@ class RippleImageSeries:
     """Class for a series of ripple images."""
 
     def __init__(self, *args):
-        if len(args) == 1 and isinstance(args[0], str) and args[0].endswith('.rimgs'):
+        if len(args) == 1 and isinstance(args[0], str) and str(args[0]).endswith('.rimgs'):
             self._load(args[0])
         elif len(args) == 1 and isinstance(args[0], list) and all(isinstance(img, RippleImage) for img in args[0]):
             self.images = args[0]
