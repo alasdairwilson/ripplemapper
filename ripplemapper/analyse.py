@@ -68,7 +68,7 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage | RippleI
         path = np.flip(np.array(path), axis=0).T # the path output has insane shape, need to flip it
         ripple_image.add_contour(path, 'A* traversal')
 
-def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage | RippleImageSeries, overwrite: bool = False, **kwargs):
+def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage | RippleImageSeries, overwrite: bool = False, use_gradients=False, **kwargs):
     """Add Chan-Vese contours to a list of RippleImage objects."""
     if isinstance(ripple_images, RippleImageSeries):
         ripple_images = ripple_images.images
@@ -84,7 +84,12 @@ def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage | Ripp
                     else:
                         warnings.warn(f"Chan-Vese contour already exists, skipping image: {ripple_image.source_file}")
                         continue
-        cv = cv_segmentation(ripple_image.image, **kwargs)
+        if use_gradients:
+            grad = np.sum(np.abs(np.gradient(ripple_image.image)), axis=0)
+            img = cv2.GaussianBlur(grad / np.max(grad), (7,7), 0)+(1-(ripple_image.image/np.max(ripple_image.image)))
+            cv = cv_segmentation(img, **kwargs)
+        else:
+            cv = cv_segmentation(ripple_image.image, **kwargs)
         contours = find_contours(cv)
         ripple_image.add_contour(np.array([contours[0][:,0],contours[0][:,1]]), 'Chan-Vese')
 
