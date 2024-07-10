@@ -1,3 +1,3 @@
 """
-This module contains package tests.
+Package tests.
 """

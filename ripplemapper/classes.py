@@ -45,7 +45,10 @@ class RippleContour:
     def plot(self, *args, **kwargs):
         """Plot the image with contours."""
         plot_contours(self, *args, **kwargs)
-        plt.title(f"{self.parent_image.source_file} - Contour: {self.method}")
+        if self.parent_image:
+            plt.title(f"{self.parent_image.source_file} - Contour: {self.method}")
+        else:
+            plt.title(f"Contour: {self.method}")
         return
 
     def smooth(self, **kwargs):

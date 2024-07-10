@@ -14,9 +14,9 @@ def load(file: str | PosixPath):
 
     if isinstance(file, PosixPath):
         file = str(file.resolve())
-    if file.endswith(".txt"):
+    if file.endswith(".txt") | file.endswith(".json"):
         return RippleContour(file)
-    elif file.endswith(".rimg"):
+    elif file.endswith(".rimg") | file.endswith(".tif") | file.endswith(".tiff"):
         return RippleImage(file)
     elif file.endswith(".rimgs"):
         return RippleImageSeries(file)

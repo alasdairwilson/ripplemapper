@@ -2,7 +2,8 @@
 requires = [
   "setuptools>=62.1",
   "setuptools_scm[toml]>=8.0",
-  "wheel",]
+  "wheel"
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -18,8 +19,8 @@ dependencies = [
   "numpy >1.24.0",
   "scipy >1.9.0",
   "matplotlib >3.6",
-  "scikit-image > 0.21",
-  "opencv-python > 4.7.0",
+  "scikit-image >0.21",
+  "opencv-python >4.7.0",
 ]
 dynamic = ["version"]
 
@@ -52,7 +53,10 @@ zip-safe = false
 include-package-data = true
 
 [tool.setuptools.packages.find]
+where = ["."]
 
+[tool.setuptools.package-data]
+"ripplemapper.data.example" = ["*.tif", "example_contour.txt", "rimgs/image_series.rimgs"]
 
 [tool.setuptools_scm]
 write_to = "ripplemapper/version.py"
@@ -61,9 +65,11 @@ local_scheme = "no-local-version"
 
 [tool.pytest.ini_options]
 norecursedirs = ['examples']
-testpaths = ['ripplemapper','docs']
+testpaths = ['tests', 'docs']
 text_file_format = "rst"
-addopts = "--doctest-glob=*.rst"
+addopts = [
+    "--doctest-glob=*.rst"
+]
 
 [tool.coverage.run]
 omit = [

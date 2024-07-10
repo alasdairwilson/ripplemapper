@@ -9,7 +9,10 @@ def plot_contours(ripple_contours, *args, **kwargs):
     if not isinstance(ripple_contours, list):
         ripple_contours = [ripple_contours]
     for contour in ripple_contours:
-        label = contour.parent_image.source_file.split('/')[-1] + ' : ' + contour.method
+        if contour.parent_image is not None:
+            label = contour.parent_image.source_file.split('/')[-1] + ' : ' + contour.method
+        else:
+            label = contour.method
         plt.plot(contour.values[1], contour.values[0],  label=label, *args, **kwargs)
     # set y axis to be high to low
     ax = plt.gca()
@@ -30,7 +33,7 @@ def plot_image(ripple_image, include_contours: bool=True, cmap: str='gray',  **k
             raise ValueError("RippleImage object must have an image or contours to plot.")
         warnings.warn(f"Image not loaded for image: {ripple_image.source_file} plotting contours only.")
         x_max = y_max = 150
-        x_min = y_min = np.Inf
+        x_min = y_min = np.inf
         for contour in ripple_image.contours:
             x_max = max(x_max, np.max(contour.values[1]))
             x_min = min(x_min, np.min(contour.values[1]))

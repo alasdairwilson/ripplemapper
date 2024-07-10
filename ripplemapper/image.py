@@ -16,7 +16,10 @@ def threshold_image(image: np.ndarray, level=0.8) -> np.ndarray:
     Returns:
         numpy.ndarray: Binary image.
     """
-    image = np.where(image > level, np.max(image))
+    prev_max = np.max(image)
+    image = image/prev_max
+    image[image > level] = 1
+    image *= prev_max
     return image
 
 
