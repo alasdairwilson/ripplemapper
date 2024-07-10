@@ -1,6 +1,6 @@
 """This module is for input/output functions."""
 import os
-from pathlib import PosixPath
+from pathlib import PosixPath, WindowsPath
 
 import cv2
 import numpy as np
@@ -12,7 +12,7 @@ def load(file: str | PosixPath):
     from ripplemapper.classes import (RippleContour, RippleImage,
                                       RippleImageSeries)
 
-    if isinstance(file, PosixPath):
+    if isinstance(file, PosixPath) | isinstance(file, WindowsPath):
         file = str(file.resolve())
     if file.endswith(".txt") | file.endswith(".json"):
         return RippleContour(file)
