@@ -29,7 +29,7 @@ def load(file: str | PosixPath):
 def load_image(file: str | PosixPath) -> np.ndarray:
     """Load an image file based on file extension."""
     # TODO (ADW): this needs to be refactored to allow lists.
-    if isinstance(file, PosixPath):
+    if isinstance(file, PosixPath) | isinstance(file, WindowsPath):
         file = str(file.resolve())
     if file.endswith('.tif') or file.endswith('.tiff'):
         _, img_data = load_tif(file)
