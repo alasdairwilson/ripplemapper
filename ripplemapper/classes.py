@@ -107,7 +107,7 @@ class RippleImage:
             return self.contours[contour]
         elif isinstance(contour, str):
             for cont in self.contours:
-                if contour in cont.method:
+                if contour.lower() in cont.method.lower():
                     return cont
         else:
             raise ValueError("Invalid input, expected an integer or method string")
