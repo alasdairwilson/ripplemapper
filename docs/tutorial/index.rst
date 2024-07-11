@@ -89,7 +89,26 @@ All of these functions also work with `RippleImageSeries` objects, e.g.
     series.images[0].plot()
     plt.show()
 
+Note, here we have passed the overwrite keyword since those contour methods already exist.
+
 For a more detailed explanation of how to use these functions, see the :ref:`reference` section.
+
+Visualising an Image Series
+****************************
+
+We have multiple methods attached to rimg and rimgs that help visualise the interface.
+
+First we can produce animated .gif files easily:
+
+.. code-block:: python
+
+    series.animate("example_series.gif")
+
+We can also produce a timeseries plot of any of the contours in our series:
+
+.. code-block:: python
+
+    series.timeseries("Upper Boundary")
 
 Saving and loading data
 ************************
