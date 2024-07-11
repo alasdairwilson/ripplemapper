@@ -39,6 +39,10 @@ def plot_image(ripple_image, include_contours: bool=True, cmap: str='gray',  **k
             x_min = min(x_min, np.min(contour.values[1]))
             y_max = max(y_max, np.max(contour.values[0]))
             y_min = min(y_min, np.min(contour.values[0]))
+        if x_min == np.inf:
+            x_min = 0
+        if y_min == np.inf:
+            y_min = 0
         x_min, x_max, y_min, y_max = int(np.floor(x_min)), int(np.ceil(x_max)), int(np.floor(y_min)), int(np.ceil(y_max))
         plt.imshow(np.zeros((y_max, x_max)), cmap=cmap, **kwargs)
         plt.xlim(x_min, x_max)

@@ -20,14 +20,24 @@ def add_boundary_contours(ripple_images: list[RippleImage] | RippleImage | Rippl
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
         if len(ripple_image.contours) > 0:
-            for contour in ripple_image.contours:
-                if 'Upper Boundary' in contour.method or 'Lower Boundary' in contour.method:
-                    if overwrite:
-                        warnings.warn(f"Overwriting boundary contour for image: {ripple_image.source_file}")
-                        ripple_image.contours.remove(contour)
-                    else:
-                        warnings.warn(f"Boundary contour already exists, skipping image: {ripple_image.source_file}")
-                        continue
+            indexes = []
+            for i in range(len(ripple_image.contours)):
+                if ripple_image.contours[i].method == 'Upper Boundary':
+                    indexes.append(i)
+                if ripple_image.contours[i].method == 'Lower Boundary':
+                    indexes.append(i)
+            if len(indexes) > 0:
+                if overwrite:
+                    warnings.warn(f"Overwriting boundary contours for image: {ripple_image.source_file}")
+                    if len(indexes) == 1:
+                        ripple_image.contours.pop(indexes[0])
+                    if len(indexes) == 2:
+                        ripple_image.contours.pop(indexes[0])
+                        # they have now moved by 1.
+                        ripple_image.contours.pop(indexes[1]-1)
+                else:
+                    warnings.warn(f"Boundary contours already exist, skipping image: {ripple_image.source_file}")
+                    continue
         edges = detect_edges(ripple_image.image)
         processed_edges = process_edges(edges)
         contours = find_contours(processed_edges, level=level)
@@ -47,14 +57,20 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage | RippleI
         if len(ripple_image.contours) < 2:
             warnings.warn(f"RippleImage object must have at least two contours, skipping image: {ripple_image.source_file}")
             continue
-        for contour in ripple_image.contours:
-            if 'A* traversal' in contour.method:
-                if overwrite:
-                    warnings.warn(f"Overwriting A* contour for image: {ripple_image.source_file}")
-                    ripple_image.contours.remove(contour)
-                else:
-                    warnings.warn(f"A* contour already exists, skipping image: {ripple_image.source_file}")
-                    continue
+        methods = [contour.method for contour in ripple_image.contours]
+        if 'A* traversal' in methods:
+            if overwrite:
+                warnings.warn(f"Overwriting A* contour for image: {ripple_image.source_file}")
+                # find me the method index that matches 'A* traversal'
+                for contour in ripple_image.contours:
+                    print(contour.method)
+                    if contour.method == 'A* traversal':
+                        ripple_image.contours.remove(contour)
+                    print(ripple_image.contours)
+            else:
+                warnings.warn(f"A* contour already exists, skipping image: {ripple_image.source_file}")
+                continue
+
         cont1 = np.flip(ripple_image.contours[contour_index[0]].values).astype(np.int32).T
         cont2 = np.flip(ripple_image.contours[contour_index[1]].values).astype(np.int32).T
         contour = combine_contours(cont1, cont2)
@@ -76,14 +92,16 @@ def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage | Ripp
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
         if len(ripple_image.contours) > 0:
-            for contour in ripple_image.contours:
-                if 'Chan-Vese' in contour.method:
-                    if overwrite:
-                        warnings.warn(f"Overwriting Chan-Vese contour for image: {ripple_image.source_file}")
-                        ripple_image.contours.remove(contour)
-                    else:
-                        warnings.warn(f"Chan-Vese contour already exists, skipping image: {ripple_image.source_file}")
-                        continue
+            methods = [contour.method for contour in ripple_image.contours]
+            if 'Chan-Vese' in methods:
+                if overwrite:
+                    warnings.warn(f"Overwriting Chan-Vese contour for image: {ripple_image.source_file}")
+                    for contour in ripple_image.contours:
+                        if contour.method == 'Chan-Vese':
+                            ripple_image.contours.remove(contour)
+                else:
+                    warnings.warn(f"Chan-Vese contour already exists, skipping image: {ripple_image.source_file}")
+                    continue
         if use_gradients:
             grad = np.sum(np.abs(np.gradient(ripple_image.image)), axis=0)
             img = cv2.GaussianBlur(grad / np.max(grad), (7,7), 0)+(1-(ripple_image.image/np.max(ripple_image.image)))

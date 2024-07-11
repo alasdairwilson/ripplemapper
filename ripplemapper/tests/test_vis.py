@@ -30,6 +30,13 @@ def test_plot_image_calls_imshow(loaded_example_image):
     assert plt.imshow.called
     plt.imshow.assert_called_with(loaded_example_image.image, cmap='gray')
 
+def test_plot_image_without_data(loaded_example_image):
+    plt.imshow = MagicMock()
+    with pytest.warns(UserWarning, match="Image not loaded for image: "):
+        loaded_example_image.image = None
+        plot_image(loaded_example_image, include_contours=False)
+        assert plt.imshow.called
+
 def test_plot_image_with_contours_calls_plot(loaded_example_image_with_contours):
     plt.imshow = MagicMock()
     plt.plot = MagicMock()

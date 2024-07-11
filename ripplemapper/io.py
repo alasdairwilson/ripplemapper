@@ -7,7 +7,7 @@ import numpy as np
 
 __all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj", "load"]
 
-def load(file: str | PosixPath):
+def load(file: str | PosixPath | WindowsPath):
     """Load a file into a ripplemapper object based on file extension."""
     from ripplemapper.classes import (RippleContour, RippleImage,
                                       RippleImageSeries)
@@ -26,7 +26,7 @@ def load(file: str | PosixPath):
 
 #  TODO (ADW): Add support for other image file types just use load_tif for now.
 #  should probably be looping in this function rather than the dispatched functions but... it's fine for now.
-def load_image(file: str | PosixPath) -> np.ndarray:
+def load_image(file: str | PosixPath | WindowsPath) -> np.ndarray:
     """Load an image file based on file extension."""
     # TODO (ADW): this needs to be refactored to allow lists.
     if isinstance(file, PosixPath) | isinstance(file, WindowsPath):
