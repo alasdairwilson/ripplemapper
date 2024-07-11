@@ -1,4 +1,5 @@
 """Ripplemapper contours module."""
+
 import heapq
 
 import cv2
@@ -10,19 +11,23 @@ from ripplemapper.image import detect_edges, process_edges
 
 __all__ = ["find_contours", "compute_recursive_midpoints", "extend_contour", "combine_contours", "smooth_contour", "distance_map", "neighbors", "a_star", "get_next_node", "find_boundaries", "find_bump_limits", "smooth_bumps", "average_boundaries"]
 
-def find_contours(edges_cleaned: np.ndarray, level: float=0.5) -> np.ndarray:
+def find_contours(edges_cleaned: np.ndarray, level: float = 0.5) -> np.ndarray:
     """
     Find contours in the edge image and approximate them to simplify.
 
-    Parameters:
-        edges_cleaned (numpy.ndarray): Processed edge image.
-        tolerance (int): Tolerance value for approximating contours.
+    Parameters
+    ----------
+    edges_cleaned : np.ndarray
+        Processed edge image.
+    level : float, optional
+        Contour level parameter for the find_contours function, by default 0.5.
 
-    Returns:
-        numpy.ndarray: Approximated contour vertices.
+    Returns
+    -------
+    np.ndarray
+        Approximated contour vertices.
     """
     contours = measure.find_contours(edges_cleaned, level=level)
-    # sort contours by length
     contours = sorted(contours, key=lambda x: len(x), reverse=True)
     return contours
 
@@ -30,95 +35,112 @@ def compute_recursive_midpoints(poly_a: np.ndarray, poly_b: np.ndarray, iteratio
     """
     Compute midpoints between two contours recursively, addressing the shape mismatch.
 
-    Parameters:
-        poly_a (numpy.ndarray): Vertices of the first contour.
-        poly_b (numpy.ndarray): Vertices of the second contour.
-        iterations (int): Number of iterations for recursion.
+    Parameters
+    ----------
+    poly_a : np.ndarray
+        Vertices of the first contour.
+    poly_b : np.ndarray
+        Vertices of the second contour.
+    iterations : int
+        Number of iterations for recursion.
 
-    Returns:
-        numpy.ndarray: Midpoint vertices after the final iteration.
+    Returns
+    -------
+    np.ndarray
+        Midpoint vertices after the final iteration.
     """
     if iterations == 0:
-        return poly_a, poly_b  # Or return poly_b, or an average if you prefer.
+        return poly_a, poly_b
 
-    # Initialize KD-Trees for each set of points
     tree_a = cKDTree(poly_a)
     tree_b = cKDTree(poly_b)
 
-    # New sets for midpoints
     midpoints_a = np.empty_like(poly_a)
     midpoints_b = np.empty_like(poly_b)
 
-    # Compute midpoints from a to b
     for i, point in enumerate(poly_a):
         dist, index = tree_b.query(point)
         nearest_point = poly_b[index]
         midpoints_a[i] = (point + nearest_point) / 2
 
-    # Compute midpoints from b to a
     for i, point in enumerate(poly_b):
         dist, index = tree_a.query(point)
         nearest_point = poly_a[index]
         midpoints_b[i] = (point + nearest_point) / 2
 
-    # Recursively refine the midpoints
     return compute_recursive_midpoints(midpoints_a, midpoints_b, iterations - 1)
 
-def extend_contour(contour, shape):
-    """Extends the contour to the edges of the image region defined by shape.
+def extend_contour(contour: np.ndarray, shape: tuple) -> np.ndarray:
+    """
+    Extend the contour to the edges of the image region defined by shape.
 
     Parameters
     ----------
-    contour : _type_
-        points marking the vertices of the contour.
+    contour : np.ndarray
+        Points marking the vertices of the contour.
     shape : tuple
-        len, width of the image.
-    """
-    # make a new first point and prepend it to the array, the new first point should have x=0 and y= the same as the second point
+        Length and width of the image.
 
-    if contour[0][1] > shape[1]/2:
+    Returns
+    -------
+    np.ndarray
+        Extended contour vertices.
+    """
+    if contour[0][1] > shape[1] / 2:
         new_first_point = [contour[0][1], shape[1]]
-        new_last_point =  [contour[-1][1], 0]
+        new_last_point = [contour[-1][1], 0]
     else:
         new_first_point = [contour[0][1], 0]
-        new_last_point =  [contour[-1][1], shape[0]]
-
+        new_last_point = [contour[-1][1], shape[0]]
 
     contour = np.vstack([new_first_point, contour, new_last_point])
-
-
-
     return contour
 
-def combine_contours(contour1, contour2):
-    """Combines two contours into one.
+def combine_contours(contour1: np.ndarray, contour2: np.ndarray) -> np.ndarray:
+    """
+    Combine two contours into one.
 
     Parameters
     ----------
-    contour1 : _type_
-        points marking the vertices of the first contour.
-    contour2 : _type_
-        points marking the vertices of the second contour.
+    contour1 : np.ndarray
+        Points marking the vertices of the first contour.
+    contour2 : np.ndarray
+        Points marking the vertices of the second contour.
+
+    Returns
+    -------
+    np.ndarray
+        Combined contour vertices.
     """
-    # we need contour one to run from low to high and contour 2 to run from high to low
     if contour1[0][1] > contour1[0][-1]:
         contour1 = np.flip(contour1)
     if contour2[0][1] < contour2[0][-1]:
         contour2 = np.flip(contour2)
 
-    #stitch them together
     contour = np.vstack([contour1, contour2])
     return contour
 
-def smooth_contour(contour: np.ndarray, window: int=3):
+def smooth_contour(contour: np.ndarray, window: int = 3) -> np.ndarray:
     """
     Smooth a contour by convolving with a small window.
+
+    Parameters
+    ----------
+    contour : np.ndarray
+        Points marking the vertices of the contour.
+    window : int, optional
+        Size of the smoothing window, by default 3.
+
+    Returns
+    -------
+    np.ndarray
+        Smoothed contour vertices.
     """
-    x = np.convolve(contour[:, 0], np.ones(window)/window, mode='valid')
-    y = np.convolve(contour[:, 1], np.ones(window)/window, mode='valid')
+    x = np.convolve(contour[:, 0], np.ones(window) / window, mode='valid')
+    y = np.convolve(contour[:, 1], np.ones(window) / window, mode='valid')
     return np.vstack([x, y]).T
 
-def distance_map(binary_map):
+def distance_map(binary_map: np.ndarray) -> np.ndarray:
     """
     Compute the distance map of a binary image.
 
@@ -126,33 +148,59 @@ def distance_map(binary_map):
     ----------
     binary_map : np.ndarray
         Binary image with interiors marked as 1's and exteriors as 0's.
+
+    Returns
+    -------
+    np.ndarray
+        Normalized distance map.
     """
-
-    # Assuming `binary_map` is your binary image with interiors marked as 1's and exteriors as 0's
-    # First, ensure the binary_map is of type uint8
     binary_map = binary_map.astype(np.uint8)
-
-    # Apply the distance transform
     distance_map = cv2.distanceTransform(binary_map, cv2.DIST_L2, cv2.DIST_MASK_PRECISE) ** 2
-    # Optionally, normalize the distance map for visualization
     norm_distance_map = cv2.normalize(distance_map, None, 0, 1.0, cv2.NORM_MINMAX)
     return norm_distance_map
 
-def neighbors(node, grid_shape):
-    """Generate neighbors for a given node."""
-    # 8-connected grid
+def neighbors(node: tuple, grid_shape: tuple) -> tuple:
+    """
+    Generate neighbors for a given node.
+
+    Parameters
+    ----------
+    node : tuple
+        The current node coordinates.
+    grid_shape : tuple
+        Shape of the grid.
+
+    Yields
+    ------
+    tuple
+        Neighboring node coordinates.
+    """
     directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
     for dx, dy in directions:
-        if get_next_node(node, dx, dy) is None:
-            continue
         nx, ny = node[0] + dx, node[1] + dy
         if 0 <= nx < grid_shape[0] and 0 <= ny < grid_shape[1]:
             yield (nx, ny)
 
-def a_star(start, goal, grid):
-    """A simple A* algorithm."""
+def a_star(start: tuple, goal: tuple, grid: np.ndarray) -> list:
+    """
+    A simple A* algorithm for pathfinding.
+
+    Parameters
+    ----------
+    start : tuple
+        Starting node coordinates.
+    goal : tuple
+        Goal node coordinates.
+    grid : np.ndarray
+        Grid representing the map.
+
+    Returns
+    -------
+    list
+        Path from start to goal.
+    """
     open_set = []
-    heapq.heappush(open_set, (0, start))  # (cost, node)
+    heapq.heappush(open_set, (0, start))
     came_from = {}
     g_score = {start: 0}
     f_score = {start: np.linalg.norm(np.array(start) - np.array(goal))}
@@ -165,10 +213,10 @@ def a_star(start, goal, grid):
             while current in came_from:
                 path.append(current)
                 current = came_from[current]
-            return path[::-1]  # Return reversed path
+            return path[::-1]
 
         for neighbor in neighbors(current, grid.shape):
-            tentative_g_score = g_score[current] + 1 / (grid[neighbor] + 0.01)  # Avoid division by zero
+            tentative_g_score = g_score[current] + 1 / (grid[neighbor] + 0.01)
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g_score
@@ -177,16 +225,43 @@ def a_star(start, goal, grid):
 
     return []
 
-def get_next_node(node, dx, dy):
+def get_next_node(node: tuple, dx: int, dy: int) -> tuple:
+    """
+    Get the next node coordinates by moving in the given direction.
+
+    Parameters
+    ----------
+    node : tuple
+        Current node coordinates.
+    dx : int
+        Change in x-coordinate.
+    dy : int
+        Change in y-coordinate.
+
+    Returns
+    -------
+    tuple
+        Next node coordinates, or None if out of bounds.
+    """
     try:
         nx, ny = node[0] + dx, node[1] + dy
     except IndexError:
         return None
     return nx, ny
 
-def find_boundaries(gray_image: np.ndarray) -> np.ndarray:
+def find_boundaries(gray_image: np.ndarray) -> tuple:
     """
     Find the upper and lower boundaries of the edge region.
+
+    Parameters
+    ----------
+    gray_image : np.ndarray
+        Grayscale image.
+
+    Returns
+    -------
+    tuple
+        Upper and lower boundaries as numpy arrays.
     """
     edges_gray = detect_edges(gray_image)
     edges_cleaned = process_edges(edges_gray)
@@ -196,13 +271,11 @@ def find_boundaries(gray_image: np.ndarray) -> np.ndarray:
         upper, lower = contours[0], contours[1]
     else:
         upper, lower = contours[1], contours[0]
-    return (upper, lower)
+    return upper, lower
 
-def find_bump_limits(large_changes: np.array, current: int = 0, max_size: int = 10, bumps:list[tuple[int, int]] = []):
+def find_bump_limits(large_changes: np.array, current: int = 0, max_size: int = 10, bumps: list[tuple[int, int]] = []) -> list[tuple[int, int]]:
     """
     Recursive function to find the limits of "small" bumps in the data.
-    Small bumps are defined as those where there are multiple large changes in a row, representing a rapid increase
-    followed by a rapid decrease in the data.
 
     Parameters
     ----------
@@ -225,7 +298,7 @@ def find_bump_limits(large_changes: np.array, current: int = 0, max_size: int = 
     start = large_changes[(large_changes > current)][0]
     end = False
     for i in np.arange(1, max_size):
-        if start+i > large_changes[-1]:
+        if start + i > large_changes[-1]:
             return bumps
         if start + i in large_changes:
             end = start + i
@@ -240,63 +313,57 @@ def smooth_bumps(contour, max_size: int = 40, std_factor: float = 2.0):
     """
     Function to smooth out bumps in the contour data.
 
-    If there is an area of the contour where the gradient rapidly changes and then rapidly changes again,
-    this can be a jump between contours rather than the continual following of one contour.
-
     Parameters
     ----------
     contour : RippleContour
         Contour object containing the data to be smoothed.
     max_size : int, optional
-        Maximum size of a bump, by default 10.
+        Maximum size of a bump, by default 40.
     std_factor : float, optional
-        Standard deviation factor for identifying large changes, by default 3.0.
+        Standard deviation factor for identifying large changes, by default 2.0.
 
     Returns
     -------
-    None
-        The function modifies the contour values in-place.
+    RippleContour
+        The smoothed RippleContour object.
     """
-    # moving average
-    moving_avg = np.convolve(contour.values[0, :], np.ones(100)/100, mode='valid')
+    moving_avg = np.convolve(contour.values[0, :], np.ones(100) / 100, mode='valid')
     diffs = contour.values[0, :len(moving_avg)] - moving_avg
     gradients = np.gradient(diffs)
-    # find large changes, grater than the std_factor*std of the gradients versus the moving average
-    large_changes = np.where(np.abs(gradients) > std_factor*np.std(gradients))[0]
-    # find any small bumps, i.e. those where there are multiple large changes in a row
+    large_changes = np.where(np.abs(gradients) > std_factor * np.std(gradients))[0]
     if len(large_changes) == 0:
         return contour
     bumps = find_bump_limits(large_changes, max_size=max_size, bumps=[])
-    # unroll each bump into all indices contained within lims
     indices = []
     for bump in bumps:
-        indices += list(np.arange(bump[0],bump[1]))
+        indices += list(np.arange(bump[0], bump[1]))
     indices = np.array(indices)
     print("num removed", indices.shape)
     contour.values = np.delete(contour.values, indices[indices < contour.values.shape[1]], axis=1)
     return contour
 
-
-def average_boundaries(self, contour_a = None, contour_b = None, iterations: int=3, save_both: bool=True):
-    """Average the two contours to get a more accurate representation of the interface.
+def average_boundaries(self, contour_a = None, contour_b = None, iterations: int = 3, save_both: bool = True) -> np.ndarray:
+    """
+    Average the two contours to get a more accurate representation of the interface.
 
     Parameters
     ----------
     contour_a : RippleContour, optional
-        The first contour to average, by default self.contours[0]
+        The first contour to average, by default self.contours[0].
     contour_b : RippleContour, optional
-        The second contour to average, by default self.contours[1]
+        The second contour to average, by default self.contours[1].
     iterations : int, optional
-        The number of iterations to average the contours over, by default 3
+        The number of iterations to average the contours over, by default 3.
+    save_both : bool, optional
+        Whether to save both averaged contours, by default True.
 
     Returns
     -------
     np.ndarray
-        The averaged contour
+        The averaged contour.
     """
     from ripplemapper.classes import RippleContour
 
-    # if no contours passed then we use the first two in the list
     if not contour_a or not contour_b:
         try:
             contour_a = self.contours[0]

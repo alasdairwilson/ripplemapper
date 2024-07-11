@@ -1,4 +1,5 @@
 """This module is for input/output functions."""
+
 import os
 from pathlib import PosixPath, WindowsPath
 
@@ -8,7 +9,24 @@ import numpy as np
 __all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj", "load"]
 
 def load(file: str | PosixPath | WindowsPath):
-    """Load a file into a ripplemapper object based on file extension."""
+    """
+    Load a file into a ripplemapper object based on file extension.
+
+    Parameters
+    ----------
+    file : str | PosixPath | WindowsPath
+        File path to load.
+
+    Returns
+    -------
+    RippleContour, RippleImage, or RippleImageSeries
+        Loaded ripplemapper object based on file extension.
+
+    Raises
+    ------
+    ValueError
+        If the file type is unsupported.
+    """
     from ripplemapper.classes import (RippleContour, RippleImage,
                                       RippleImageSeries)
 
@@ -23,12 +41,25 @@ def load(file: str | PosixPath | WindowsPath):
     else:
         raise ValueError(f"Unsupported file type: {file}")
 
-
-#  TODO (ADW): Add support for other image file types just use load_tif for now.
-#  should probably be looping in this function rather than the dispatched functions but... it's fine for now.
 def load_image(file: str | PosixPath | WindowsPath) -> np.ndarray:
-    """Load an image file based on file extension."""
-    # TODO (ADW): this needs to be refactored to allow lists.
+    """
+    Load an image file based on file extension.
+
+    Parameters
+    ----------
+    file : str | PosixPath | WindowsPath
+        File path to load.
+
+    Returns
+    -------
+    np.ndarray
+        Loaded image data.
+
+    Raises
+    ------
+    ValueError
+        If the file type is unsupported.
+    """
     if isinstance(file, PosixPath) | isinstance(file, WindowsPath):
         file = str(file.resolve())
     if file.endswith('.tif') or file.endswith('.tiff'):
@@ -37,10 +68,20 @@ def load_image(file: str | PosixPath | WindowsPath) -> np.ndarray:
         raise ValueError(f"Unsupported file type: {file}")
     return img_data[0]
 
-
 def load_tif(files: str | list[str]) -> list[np.ndarray]:
-    """Load an array of tif files and return numpy.ndarray."""
+    """
+    Load an array of tif files and return numpy.ndarray.
 
+    Parameters
+    ----------
+    files : str | list[str]
+        File path or list of file paths to load.
+
+    Returns
+    -------
+    list[np.ndarray]
+        List of loaded image data arrays.
+    """
     if isinstance(files, str):
         files = [files]
 
@@ -51,22 +92,32 @@ def load_tif(files: str | list[str]) -> list[np.ndarray]:
 
     return files, img_data
 
-def load_dir(directory: str | PosixPath, pattern: str | bool = False, skip: int = 1, start: int=0, end: int | bool=None) -> tuple[list[np.ndarray], list[str]]:
-    """Load all tif files found in directory and return the data in a list of numpy.ndarray.
+def load_dir(directory: str | PosixPath, pattern: str | bool = False, skip: int = 1, start: int = 0, end: int | bool = None) -> tuple[list[np.ndarray], list[str]]:
+    """
+    Load all tif files found in directory and return the data in a list of numpy.ndarray.
 
     Parameters
     ----------
-    directory : str
-        directory path to load tif files from
-    pattern : str, optional
-        optional pattern to match file names, by default False
+    directory : str | PosixPath
+        Directory path to load tif files from.
+    pattern : str | bool, optional
+        Optional pattern to match file names, by default False.
     skip : int, optional
-        number of files to skip, by default False
+        Number of files to skip, by default 1.
+    start : int, optional
+        Starting index, by default 0.
+    end : int | bool, optional
+        Ending index, by default None.
 
     Returns
     -------
     tuple[list[np.ndarray], list[str]]
-        list of the data arrays extracted from the tif files.
+        List of the data arrays extracted from the tif files and their corresponding file names.
+
+    Raises
+    ------
+    FileNotFoundError
+        If no tif files are found in the directory.
     """
     if isinstance(directory, PosixPath):
         directory = str(directory.resolve())
@@ -86,19 +137,30 @@ def load_dir(directory: str | PosixPath, pattern: str | bool = False, skip: int 
     files, img_data = load_tif([os.path.join(directory, file) for file in files])
     return files, img_data
 
-def load_dir_to_obj(directory: str | PosixPath, pattern: str | bool = False, skip: int = 1, start: int=0, end: int=None, **kwargs) -> list:
-    """Load all tif files found in directory and return the data in a list of Ripple Image objects.
+def load_dir_to_obj(directory: str | PosixPath, pattern: str | bool = False, skip: int = 1, start: int = 0, end: int = None, **kwargs) -> list:
+    """
+    Load all tif files found in directory and return the data in a list of RippleImage objects.
 
     Parameters
     ----------
-
+    directory : str | PosixPath
+        Directory path to load tif files from.
+    pattern : str | bool, optional
+        Optional pattern to match file names, by default False.
+    skip : int, optional
+        Number of files to skip, by default 1.
+    start : int, optional
+        Starting index, by default 0.
+    end : int, optional
+        Ending index, by default None.
+    **kwargs
+        Additional keyword arguments for the RippleImage initialization.
 
     Returns
     -------
     list[RippleImage]
-        list of the data arrays extracted from the tif files.
+        List of RippleImage objects initialized from the tif files.
     """
-    # prevent circular import
     from ripplemapper.classes import RippleImage
     files, img_data = load_dir(directory, pattern, skip=skip, start=start, end=end)
     return [RippleImage(file, img_data, **kwargs) for file, img_data in zip(files, img_data)]
