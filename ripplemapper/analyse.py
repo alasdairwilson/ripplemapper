@@ -20,6 +20,7 @@ def add_boundary_contours(ripple_images: list[RippleImage] | RippleImage | Rippl
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
         if len(ripple_image.contours) > 0:
+            # TODO: refactor to use new get_contour method
             indexes = []
             for i in range(len(ripple_image.contours)):
                 if ripple_image.contours[i].method == 'Upper Boundary':
@@ -57,6 +58,7 @@ def add_a_star_contours(ripple_images: list[RippleImage] | RippleImage | RippleI
         if len(ripple_image.contours) < 2:
             warnings.warn(f"RippleImage object must have at least two contours, skipping image: {ripple_image.source_file}")
             continue
+        # TODO: refactor to use new get_contour method
         methods = [contour.method for contour in ripple_image.contours]
         if 'A* traversal' in methods:
             if overwrite:
@@ -92,6 +94,7 @@ def add_chan_vese_contours(ripple_images: list[RippleImage] | RippleImage | Ripp
         ripple_images = [ripple_images]
     for ripple_image in ripple_images:
         if len(ripple_image.contours) > 0:
+            # TODO: refactor to use new get_contour method
             methods = [contour.method for contour in ripple_image.contours]
             if 'Chan-Vese' in methods:
                 if overwrite:

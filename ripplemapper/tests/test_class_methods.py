@@ -3,8 +3,19 @@ import os
 import matplotlib.pyplot as plt
 import pytest
 
+from ripplemapper.analyse import add_boundary_contours
 from ripplemapper.classes import RippleContour
 
+
+def test_get_contour_index(loaded_example_image_with_contours):
+    contour = loaded_example_image_with_contours.get_contour(0)
+    assert contour is not None
+
+def test_get_contour_method(loaded_example_image_with_contours):
+    method = "Lower Boundary"
+    contour = loaded_example_image_with_contours.get_contour(method)
+    assert contour is not None
+    assert contour.method == method
 
 def test_ripple_contour_to_physical(loaded_example_contour):
     # Assuming the function is not yet implemented
@@ -17,6 +28,11 @@ def test_ripple_contour_save(loaded_example_contour, tmp_path):
 
 def test_ripple_contour_plot(loaded_example_contour):
     loaded_example_contour.plot()
+    plt.close()
+
+def test_timeseries_plot(loaded_example_image_series):
+    add_boundary_contours(loaded_example_image_series)
+    loaded_example_image_series.timeseries(0)
     plt.close()
 
 def test_ripple_contour_smooth(loaded_example_contour):

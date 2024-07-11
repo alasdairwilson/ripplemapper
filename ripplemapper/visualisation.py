@@ -3,6 +3,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 
+__all__ = ['plot_contours', 'plot_image', 'plot_timeseries']
 
 def plot_contours(ripple_contours, *args, **kwargs):
     """Plot the contour."""
@@ -56,3 +57,11 @@ def plot_image(ripple_image, include_contours: bool=True, cmap: str='gray',  **k
         for contour in ripple_image.contours:
             plt.plot(contour.values[:][1], contour.values[:][0], label=contour.method)
         plt.legend()
+
+
+def plot_timeseries(contours, labels, **kwargs):
+    """Plot a timeseries of contours."""
+    for i, contour in enumerate(contours):
+        plt.plot(contour.values[1], contour.values[0], label=labels[i], **kwargs)
+    plt.gca().invert_yaxis()
+    plt.legend()

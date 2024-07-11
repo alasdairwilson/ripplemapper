@@ -11,7 +11,8 @@ from matplotlib.animation import FuncAnimation
 from ripplemapper.contour import smooth_bumps
 from ripplemapper.image import preprocess_image
 from ripplemapper.io import load_image
-from ripplemapper.visualisation import plot_contours, plot_image
+from ripplemapper.visualisation import (plot_contours, plot_image,
+                                        plot_timeseries)
 
 __all__ = ['RippleContour', 'RippleImage', 'RippleImageSeries']
 
@@ -99,6 +100,18 @@ class RippleImage:
         """Add a contour to the RippleImage object."""
         contour = RippleContour(*args, image=self)
         self.contours.append(contour)
+
+    def get_contour(self, contour: str | int):
+        """Return a given contour for the image."""
+        if isinstance(contour, int):
+            return self.contours[contour]
+        elif isinstance(contour, str):
+            for cont in self.contours:
+                if contour in cont.method:
+                    return cont
+        else:
+            raise ValueError("Invalid input, expected an integer or method string")
+
 
     def smooth_contours(self, **kwargs):
         """Smooth all the contours in the image."""
@@ -193,6 +206,13 @@ class RippleImageSeries:
                 image_fname = None
             image.save(fname=image_fname, save_image_data=save_image_data)
         return fname
+
+    def timeseries(self, contour: str | int = 0, **kwargs):
+        """Plot a timeseries of the same contour."""
+        contours = [img.get_contour(contour) for img in self.images]
+        labels = [img.source_file.split('/')[-1] for img in self.images]
+        plot_timeseries(contours, labels)
+
 
     def _load(self, file: str):
         """Load the image series from a file."""
