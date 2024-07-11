@@ -20,6 +20,11 @@ def test_load_ripple_image():
     assert image.source_file == str(example_data[0].resolve())
     assert isinstance(image, RippleImage)
 
+def test_load_with_roi():
+    image = load(example_data[0], roi_x=[0,50], roi_y=[0,100])
+    assert image.image is not None
+    assert image.image.shape == (50, 100)
+
 def test_load_ripple_image_series():
     series = load(example_rimgs)
     assert len(series.images) == 4
@@ -46,6 +51,13 @@ def test_load_dir_to_obj():
     images = load_dir_to_obj(example_dir)
     assert len(images) > 0
     assert images[0].image is not None
+    assert isinstance(images[0], RippleImage)
+
+def test_load_dir_to_obj_with_roi():
+    images = load_dir_to_obj(example_dir, roi_x=[0, 50], roi_y=[0, 100])
+    assert len(images) > 0
+    assert images[0].image is not None
+    assert images[0].image.shape == (50, 100)
     assert isinstance(images[0], RippleImage)
 
 if __name__ == '__main__':

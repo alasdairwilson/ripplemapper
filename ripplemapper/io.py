@@ -8,7 +8,7 @@ import numpy as np
 
 __all__ = ["load_image", "load_tif", "load_dir", "load_dir_to_obj", "load"]
 
-def load(file: str | PosixPath | WindowsPath):
+def load(file: str | PosixPath | WindowsPath, **kwargs):
     """
     Load a file into a ripplemapper object based on file extension.
 
@@ -33,11 +33,11 @@ def load(file: str | PosixPath | WindowsPath):
     if isinstance(file, PosixPath) | isinstance(file, WindowsPath):
         file = str(file.resolve())
     if file.endswith(".txt") | file.endswith(".json"):
-        return RippleContour(file)
+        return RippleContour(file, **kwargs)
     elif file.endswith(".rimg") | file.endswith(".tif") | file.endswith(".tiff"):
-        return RippleImage(file)
+        return RippleImage(file, **kwargs)
     elif file.endswith(".rimgs"):
-        return RippleImageSeries(file)
+        return RippleImageSeries(file, **kwargs)
     else:
         raise ValueError(f"Unsupported file type: {file}")
 
