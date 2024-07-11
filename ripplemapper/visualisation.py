@@ -6,7 +6,18 @@ import numpy as np
 __all__ = ['plot_contours', 'plot_image', 'plot_timeseries']
 
 def plot_contours(ripple_contours, *args, **kwargs):
-    """Plot the contour."""
+    """
+    Plot the contour.
+
+    Parameters
+    ----------
+    ripple_contours : RippleContour or list of RippleContour
+        The contour or list of contours to plot.
+    *args : tuple
+        Additional positional arguments for the plot function.
+    **kwargs : dict
+        Additional keyword arguments for the plot function.
+    """
     if not isinstance(ripple_contours, list):
         ripple_contours = [ripple_contours]
     for contour in ripple_contours:
@@ -14,20 +25,25 @@ def plot_contours(ripple_contours, *args, **kwargs):
             label = contour.parent_image.source_file.split('/')[-1] + ' : ' + contour.method
         else:
             label = contour.method
-        plt.plot(contour.values[1], contour.values[0],  label=label, *args, **kwargs)
-    # set y axis to be high to low
+        plt.plot(contour.values[1], contour.values[0], label=label, *args, **kwargs)
+    # set y-axis to match images (inverted)
     ax = plt.gca()
     ax.set_ylim((np.max(ax.get_ylim()), np.min(ax.get_ylim())))
 
-def plot_image(ripple_image, include_contours: bool=True, cmap: str='gray',  **kwargs):
-    """Plot a RippleImage object.
+def plot_image(ripple_image, include_contours: bool = True, cmap: str = 'gray', **kwargs):
+    """
+    Plot a RippleImage object.
 
     Parameters
     ----------
     ripple_image : RippleImage
         The RippleImage object to plot.
     include_contours : bool, optional
-        whether to include all the RippleContours on the plot, by default True
+        Whether to include all the RippleContours on the plot, by default True.
+    cmap : str, optional
+        Colormap to use for plotting the image, by default 'gray'.
+    **kwargs : dict
+        Additional keyword arguments for the imshow function.
     """
     if ripple_image.image is None:
         if ripple_image.contours is None:
@@ -58,9 +74,19 @@ def plot_image(ripple_image, include_contours: bool=True, cmap: str='gray',  **k
             plt.plot(contour.values[:][1], contour.values[:][0], label=contour.method)
         plt.legend()
 
-
 def plot_timeseries(contours, labels, **kwargs):
-    """Plot a timeseries of contours."""
+    """
+    Plot a timeseries of contours.
+
+    Parameters
+    ----------
+    contours : list of RippleContour
+        List of contours to plot.
+    labels : list of str
+        List of labels corresponding to each contour.
+    **kwargs : dict
+        Additional keyword arguments for the plot function.
+    """
     for i, contour in enumerate(contours):
         plt.plot(contour.values[1], contour.values[0], label=labels[i], **kwargs)
     plt.gca().invert_yaxis()
