@@ -1,0 +1,32 @@
+diff a/pyproject.toml b/pyproject.toml	(rejected hunks)
+@@ -1,7 +1,7 @@
+ [build-system]
+ requires = [
+   "setuptools>=62.1",
+-  "setuptools_scm[toml]>=6.2",
++  "setuptools_scm[toml]>=8.0.0",
+   "wheel",]
+ build-backend = "setuptools.build_meta"
+ 
+@@ -10,7 +10,7 @@ name = "ripplemapper"
+ description = "Tools for analysing the water air interface to detect waves"
+ requires-python = ">=3.9"
+ readme = { file = "README.rst", content-type = "text/x-rst" }
+-license = { file = "licenses/LICENSE.rst", content-type = "text/plain" }
++license = { file = "licenses/LICENSE.rst" }
+ authors = [
+   { name = "Alasdair Wilson", email = "alasdair.wlsn@googlemail.com" },
+ ]
+@@ -36,10 +36,11 @@ zip-safe = false
+ include-package-data = true
+ 
+ [tool.setuptools.packages.find]
++include = ["ripplemapper*"]
+ 
+ 
+ [tool.setuptools_scm]
+-write_to = "ripplemapper/version.py"
++version_file = "ripplemapper/version.py"
+ 
+ [tool.pytest.ini_options]
+ testpaths = [
