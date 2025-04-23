@@ -1,7 +1,7 @@
 [build-system]
 requires = [
   "setuptools>=62.1",
-  "setuptools_scm[toml]>=8.0",
+  "setuptools_scm[toml]>=8.0.0",
   "wheel"
 ]
 build-backend = "setuptools.build_meta"
@@ -11,7 +11,7 @@ name = "ripplemapper"
 description = "Tools for analysing the water air interface to programmatically detect surface waves."
 requires-python = ">=3.10"
 readme = { file = "README.rst", content-type = "text/x-rst" }
-license = { file = "licenses/LICENSE.rst", content-type = "text/plain" } # noqa
+license = { file = "licenses/LICENSE.rst" }
 authors = [
   { name = "Alasdair Wilson", email = "alasdair.wlsn@googlemail.com" },
 ]
@@ -54,12 +54,13 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["ripplemapper*", "ripplemapper", "ripplemapper.*"]
 
 [tool.setuptools.package-data]
 "ripplemapper.data.example" = ["*.tif", "example_contour.txt", "rimgs/image_series.rimgs"]
 
 [tool.setuptools_scm]
-write_to = "ripplemapper/version.py"
+version_file = "ripplemapper/version.py"
 # Use "no-local-version" so dev releases are compatible with PyPI
 local_scheme = "no-local-version"
 
