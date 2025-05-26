@@ -1,0 +1,9 @@
+diff a/pyproject.toml b/pyproject.toml	(rejected hunks)
+@@ -49,6 +49,7 @@ testpaths = [
+ doctest_plus = "enabled"
+ text_file_format = "rst"
+ addopts = "--doctest-rst"
++norecursedirs = ["ripplemapper[\\/]_dev"]
+ 
+ [tool.coverage.run]
+ omit = [
