@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/OpenAstronomy/packaging-guide",
-  "commit": "cb394c68be7c573ddcfaeeea54757c72555eedd0",
+  "commit": "68d04ab47d8a2332a18d49112f3f86f7005dbd43",
   "checkout": null,
   "context": {
     "cookiecutter": {
@@ -25,7 +25,7 @@
         ".github/workflows/sub_package_update.yml"
       ],
       "_template": "https://github.com/OpenAstronomy/packaging-guide",
-      "_commit": "cb394c68be7c573ddcfaeeea54757c72555eedd0"
+      "_commit": "68d04ab47d8a2332a18d49112f3f86f7005dbd43"
     }
   },
   "directory": null
